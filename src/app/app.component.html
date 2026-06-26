@@ -1,0 +1,27 @@
+<div class="page-shell">
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Fresh ideas for every craving</p>
+      <h1>{{ title }}</h1>
+      <p class="hero-copy">Browse a colorful collection of recipes arranged in tidy square cards.</p>
+    </div>
+  </header>
+
+  <main class="recipe-grid">
+    @for (recipe of recipes; track recipe.name) {
+      <article class="recipe-card">
+        <div class="recipe-visual">
+          <img src="assets/spaghetti.png" alt="Spaghetti" class="recipe-image" />
+          <span class="recipe-tag">{{ recipe.tag }}</span>
+          <div class="recipe-meta">
+            <h2>{{ recipe.name }}</h2>
+            <span>{{ recipe.time }}</span>
+          </div>
+        </div>
+        <div class="recipe-content">
+          <p>{{ recipe.description }}</p>
+        </div>
+      </article>
+    }
+  </main>
+</div>
