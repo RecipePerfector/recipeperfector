@@ -9,19 +9,7 @@
 
   <main class="recipe-grid">
     @for (recipe of recipes; track recipe.name) {
-      <article class="recipe-card">
-        <div class="recipe-visual">
-          <img src="assets/spaghetti.png" alt="Spaghetti" class="recipe-image" />
-          <span class="recipe-tag">{{ recipe.tag }}</span>
-          <div class="recipe-meta">
-            <h2>{{ recipe.name }}</h2>
-            <span>{{ recipe.time }}</span>
-          </div>
-        </div>
-        <div class="recipe-content">
-          <p>{{ recipe.description }}</p>
-        </div>
-      </article>
+      <app-recipe-card [recipe]="recipe"></app-recipe-card>
     }
   </main>
 </div>

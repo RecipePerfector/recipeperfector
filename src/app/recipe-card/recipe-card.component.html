@@ -1,0 +1,13 @@
+<article class="recipe-card" (click)="onCardClick()">
+  <div class="recipe-visual" [class.spinning]="isSpinning">
+    <img src="assets/spaghetti.png" alt="Spaghetti" class="recipe-image" />
+    <span class="recipe-tag">{{ recipe.tag }}</span>
+    <div class="recipe-meta">
+      <h2>{{ recipe.name }}</h2>
+      <span>{{ recipe.time }}</span>
+    </div>
+  </div>
+  <div class="recipe-content">
+    <p>{{ recipe.description }}</p>
+  </div>
+</article>
