@@ -9,7 +9,7 @@ import { RecipeCardComponent } from './recipe-card/recipe-card.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Recipe Perfector';
+  title = 'Recipe Collection';
 
   recipes = [
     {
