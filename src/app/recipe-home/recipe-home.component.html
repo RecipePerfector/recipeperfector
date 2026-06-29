@@ -1,0 +1,15 @@
+<div class="page-shell">
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Crowd Source Recipe Perfection</p>
+      <h1>{{ title }}</h1>
+      <p class="hero-copy">This site is personal website project that is under construction.</p>
+    </div>
+  </header>
+
+  <main class="recipe-grid">
+    @for (recipe of recipes; track recipe.name) {
+      <app-recipe-card [recipe]="recipe"></app-recipe-card>
+    }
+  </main>
+</div>

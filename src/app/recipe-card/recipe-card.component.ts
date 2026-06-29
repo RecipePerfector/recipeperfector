@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-recipe-card',
@@ -17,8 +18,11 @@ export class RecipeCardComponent {
 
   isSpinning = false;
 
+  constructor(private router: Router) {}
+
   onCardClick() {
     this.isSpinning = true;
+    this.router.navigate(['/recipe']);
     setTimeout(() => {
       this.isSpinning = false;
     }, 600);

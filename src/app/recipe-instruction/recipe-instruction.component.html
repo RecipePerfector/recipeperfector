@@ -1,0 +1,35 @@
+<section class="instructions-page" *ngIf="!isLoading; else loading">
+  <a class="back-link" routerLink="/">← Back to recipes</a>
+
+  <article class="instruction-card" *ngIf="recipe; else error">
+    <header class="instruction-header">
+      <p class="eyebrow">Recipe instructions</p>
+      <h1>{{ recipe.title }}</h1>
+      <p class="source">Source: {{ recipe.source }}</p>
+    </header>
+
+    <div class="content-grid">
+      <section>
+        <h2>Ingredients</h2>
+        <ul>
+          <li *ngFor="let ingredient of recipe.ingredients">{{ ingredient }}</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Directions</h2>
+        <ol>
+          <li *ngFor="let direction of recipe.directions">{{ direction }}</li>
+        </ol>
+      </section>
+    </div>
+  </article>
+
+  <ng-template #error>
+    <p class="error">{{ errorMessage }}</p>
+  </ng-template>
+</section>
+
+<ng-template #loading>
+  <p class="loading">Loading recipe…</p>
+</ng-template>

@@ -1,15 +1,1 @@
-<div class="page-shell">
-  <header class="hero">
-    <div>
-      <p class="eyebrow">Fresh ideas for every craving</p>
-      <h1>{{ title }}</h1>
-      <p class="hero-copy">Browse a colorful collection of recipes arranged in tidy square cards.</p>
-    </div>
-  </header>
-
-  <main class="recipe-grid">
-    @for (recipe of recipes; track recipe.name) {
-      <app-recipe-card [recipe]="recipe"></app-recipe-card>
-    }
-  </main>
-</div>
+<router-outlet></router-outlet>
