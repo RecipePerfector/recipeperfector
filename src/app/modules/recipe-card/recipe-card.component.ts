@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApiService } from '../../services/api/api.service';
 
 @Component({
   selector: 'app-recipe-card',
@@ -18,7 +19,9 @@ export class RecipeCardComponent {
 
   isSpinning = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private api: ApiService,
+  ) {}
 
   onCardClick() {
     this.isSpinning = true;
@@ -26,5 +29,9 @@ export class RecipeCardComponent {
     setTimeout(() => {
       this.isSpinning = false;
     }, 600);
+    this.api.callAPIGet('/testCall').then((data: any) => {
+      console.log('test response: ');
+      console.log(JSON.stringify(data));
+    });
   }
 }
