@@ -1,0 +1,40 @@
+<header class="app-header">
+  <div class="brand">Recipe Perfector</div>
+  <p class="eyebrow">Crowd Source Recipe Perfection</p>
+  <button class="user-menu" type="button" (click)="openLoginDialog()">
+    <span class="user-avatar" aria-hidden="true">
+      @if (isLoggedIn && userImageUrl) {
+        <img [src]="userImageUrl" alt="User profile" />
+      } @else {
+        <span class="guest-icon">👤</span>
+      }
+    </span>
+    <span class="user-label">{{ isLoggedIn ? 'Account' : 'Login' }}</span>
+  </button>
+</header>
+
+@if (isLoginDialogOpen) {
+  <div class="login-dialog-backdrop" (click)="closeLoginDialog()">
+    <div class="login-dialog" role="dialog" aria-modal="true" aria-labelledby="login-dialog-title" (click)="$event.stopPropagation()">
+      <h2 id="login-dialog-title">Sign in</h2>
+      <label class="login-toggle">
+        <input type="checkbox" [(ngModel)]="usePasswordless" name="usePasswordless" />
+        <span>Use passwordless sign-in</span>
+      </label>
+      <label class="login-field">
+        <span>E-mail</span>
+        <input type="text" [(ngModel)]="username" name="username" />
+      </label>
+      @if (!usePasswordless) {
+        <label class="login-field">
+          <span>Password</span>
+          <input type="password" [(ngModel)]="password" name="password" />
+        </label>
+      }
+      <div class="login-actions">
+        <button type="button" class="secondary-btn" (click)="closeLoginDialog()">Cancel</button>
+        <button type="button" class="primary-btn" (click)="submitLogin()">{{ usePasswordless ? 'Send e-mail code' : 'Sign in' }}</button>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,53 @@
+import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { UserService } from '../../services/user/user.service';
+
+@Component({
+  selector: 'app-auth-shell',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './auth-shell.component.html',
+  styleUrl: './auth-shell.component.css'
+})
+export class AuthShellComponent {
+  private userService = inject(UserService);
+
+  isLoginDialogOpen = false;
+  username = '';
+  password = '';
+  usePasswordless = false;
+
+  get isLoggedIn(): boolean {
+    return this.userService.isUserLoggedIn();
+  }
+
+  get userImageUrl(): string {
+    return this.userService.getUserImageURL();
+  }
+
+  openLoginDialog(): void {
+    this.isLoginDialogOpen = true;
+  }
+
+  closeLoginDialog(): void {
+    this.isLoginDialogOpen = false;
+    this.username = '';
+    this.password = '';
+    this.usePasswordless = false;
+  }
+
+  submitLogin(): void {
+    if (this.usePasswordless) {
+      if (this.username.trim()) {
+        this.userService.setUserLoggedIn(true);
+        this.closeLoginDialog();
+      }
+      return;
+    }
+
+    if (this.username.trim() && this.password.trim()) {
+      this.userService.setUserLoggedIn(true);
+      this.closeLoginDialog();
+    }
+  }
+}

@@ -13,15 +13,6 @@
   margin-bottom: 1.75rem;
 }
 
-.eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #ff6b6b;
-  margin-bottom: 0.5rem;
-}
-
 .hero h1 {
   margin: 0 0 0.5rem;
   font-size: clamp(2rem, 3vw, 2.75rem);

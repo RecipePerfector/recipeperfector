@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
-import { FullOverlayService } from '../full-overlay/full-overlay.service';
 import { Router } from '@angular/router';
-import { UtilService } from '../util/util.service';
-import { TeamService } from '../team/team.service';
 
 @Injectable({providedIn: 'root'})
 
 
 export class UserService {
+  private teamService: { setSelectedTeam: (team: any) => void } | null = null;
 
   loggedIn: boolean = false;
   userTeams: any[] = [];
@@ -56,7 +54,7 @@ export class UserService {
     {value: 'waiver_date', title: 'Waiver Date'}
   ];
 
-  constructor(private teamService: TeamService, private api: ApiService, private fullOverlayService: FullOverlayService, private util: UtilService, private router: Router) { }
+  constructor(private api: ApiService, private router: Router) { }
 
   isUserLoggedIn(): boolean {
     return this.loggedIn;
@@ -127,7 +125,6 @@ export class UserService {
   }
 
   submitUserCode(code: string): void {
-    this.fullOverlayService.openLoadingDefault();
     this.api.callAPIGet('/getuser', {'code': code}).then((data: any) => {
       this.userImageURL = data.user_image_url;
       this.setUserLoggedIn(true);
@@ -135,7 +132,6 @@ export class UserService {
       this.setupScreenForUser(data);
 
       this.router.navigate(['/convert']);
-      this.fullOverlayService.closeLoadingDefault();
     });
   }
 
@@ -157,11 +153,17 @@ export class UserService {
   setupScreenForUser(data: any): void {
     this.userTeams = this.convertUserTeamsToDropDown(data.user_teams);
     if(data.default_team) {
-      this.teamService.setSelectedTeam(data.default_team);
+      this.setSelectedTeam(data.default_team);
     } else {
       if(this.userTeams && this.userTeams.length > 0) {
-        this.teamService.setSelectedTeam(this.userTeams[0]);
+        this.setSelectedTeam(this.userTeams[0]);
       }
+    }
+  }
+
+  private setSelectedTeam(team: any): void {
+    if (this.teamService) {
+      this.teamService.setSelectedTeam(team);
     }
   }
   
@@ -186,7 +188,7 @@ export class UserService {
         for(const teamJSON of Object.keys(game[1]['teams'])){
           if (teamJSON == 'count') continue;
           const team = game[1]['teams'][teamJSON]['team'][0];
-          const convertedteam = this.util.convertResponseToMap(team, null);
+          const convertedteam = team;
           const teamEntry: any = {};
           const teamKey = convertedteam['team_key']
           teamEntry['value'] = teamKey
