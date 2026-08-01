@@ -15,6 +15,7 @@ export class AuthShellComponent {
   isLoginDialogOpen = false;
   username = '';
   password = '';
+  accountMode: 'create' | 'existing' = 'existing';
   usePasswordless = false;
 
   get isLoggedIn(): boolean {
@@ -33,6 +34,7 @@ export class AuthShellComponent {
     this.isLoginDialogOpen = false;
     this.username = '';
     this.password = '';
+    this.accountMode = 'existing';
     this.usePasswordless = false;
   }
 
