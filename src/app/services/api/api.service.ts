@@ -9,30 +9,15 @@ export class ApiService {
   //apiURL: string = 'https://fantasyautoadder-backend-1.onrender.com';
   constructor(private http: HttpClient) { }
 
-  callAPIGet(endpoint : string, keyMap?: any) {
-    const headers = new HttpHeaders()
-    //.set('Authorization', 'my-auth-token')
-    .set('Content-Type', 'application/json');
+  async callAPIPost(endpoint: string, keyMap?: any) {
+    const response = await fetch(`${this.apiURL}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(keyMap ?? {})
+    });
 
-    if(keyMap) {
-      //'/getuser?code=' + code
-      endpoint = endpoint + '?';
-      let firstKey = true;
-      for (const key in keyMap) {
-        if(firstKey) {
-          endpoint = endpoint + key + '=' + keyMap[key];
-          firstKey = false;
-        } else {
-          endpoint = endpoint + '&' + key + '=' + keyMap[key];
-        firstKey = false;
-        }
-        
-
-      }
-    }
-    return this.http.get(this.apiURL + endpoint, {
-      headers: headers,
-      withCredentials: true
-    }).toPromise();
+    return response.json();
   }
 }

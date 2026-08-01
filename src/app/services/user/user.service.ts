@@ -117,28 +117,28 @@ export class UserService {
   }
 
   redirectYahooLogin(): void {
-    this.api.callAPIGet('/signin').then((data: any) => {
+    /*this.api.callAPIGet('/signin').then((data: any) => {
       if(data['url']) {
         window.location.href = data['url'];
       }
-    });
+    });*/
   }
 
   submitUserCode(code: string): void {
-    this.api.callAPIGet('/getuser', {'code': code}).then((data: any) => {
+    /*this.api.callAPIGet('/getuser', {'code': code}).then((data: any) => {
       this.userImageURL = data.user_image_url;
       this.setUserLoggedIn(true);
 
       this.setupScreenForUser(data);
 
       this.router.navigate(['/convert']);
-    });
+    });*/
   }
 
   async validSession(): Promise<boolean> {
     //TODO: Probably need to refresh screen in validSession
     //Pass what screen the user is on and process the data properly
-    const sessionData: any = await this.api.callAPIGet('/checkSession'); 
+    /*const sessionData: any = await this.api.callAPIGet('/checkSession'); 
     if(sessionData && sessionData.is_valid){
       this.userImageURL = sessionData.user_image_url;
       this.setupScreenForUser(sessionData);
@@ -147,7 +147,8 @@ export class UserService {
     } else {
       this.setUserLoggedIn(false);
       return false;
-    }
+    }*/
+   return false;
   }
 
   setupScreenForUser(data: any): void {

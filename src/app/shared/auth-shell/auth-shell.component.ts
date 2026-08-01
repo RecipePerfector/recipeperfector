@@ -47,9 +47,15 @@ export class AuthShellComponent {
       return;
     }
 
-    if (this.username.trim() && this.password.trim()) {
-      this.userService.setUserLoggedIn(true);
-      this.closeLoginDialog();
+    console.log(this.accountMode);
+    if (this.accountMode === 'create') {
+      
     }
+    /*if (this.username.trim() && this.password.trim()) {
+      //WW Do this after logging in
+      //this.userService.setUserLoggedIn(true);
+      //this.closeLoginDialog();
+      console.log(this.accountMode);
+    }*/
   }
 }
