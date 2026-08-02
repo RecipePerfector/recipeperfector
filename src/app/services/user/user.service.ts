@@ -64,6 +64,13 @@ export class UserService {
     this.loggedIn = isLoggedIn;
   }
 
+  createNewUser(email: string, password: string): void{
+    this.api.callAPIPost('/api/users/register', { email: email, password: password }).then((response: any) => {
+      console.log('create response: ');
+      console.log(response);
+    });
+  }
+
   getUserTeams(): any[] {
     return this.userTeams;
   }

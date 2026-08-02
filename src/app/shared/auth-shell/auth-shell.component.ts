@@ -47,9 +47,11 @@ export class AuthShellComponent {
       return;
     }
 
-    console.log(this.accountMode);
+    //Creating an account?
     if (this.accountMode === 'create') {
-      
+      console.log(this.username);
+      console.log(this.password);
+      this.userService.createNewUser(this.username, this.password);
     }
     /*if (this.username.trim() && this.password.trim()) {
       //WW Do this after logging in

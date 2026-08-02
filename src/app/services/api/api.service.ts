@@ -17,7 +17,8 @@ export class ApiService {
       },
       body: JSON.stringify(keyMap ?? {})
     });
-
-    return response.json();
+    const jsonResponse = await response.json();
+    console.log('jr',jsonResponse);
+    return jsonResponse;
   }
 }

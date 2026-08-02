@@ -29,7 +29,7 @@ export class RecipeCardComponent {
     setTimeout(() => {
       this.isSpinning = false;
     }, 600);
-    this.api.callAPIPost('/api/users/wwTestGet', { email: 'myemail2@example.com' }).then((response: any) => {
+    this.api.callAPIPost('/api/users/wwTestGet', { email: 'myemail@example.com' }).then((response: any) => {
       console.log('test response: ');
       console.log(response);
     });
