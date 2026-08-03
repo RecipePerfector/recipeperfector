@@ -9,4 +9,11 @@ import { AuthShellComponent } from './shared/auth-shell/auth-shell.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {}
+export class AppComponent {
+  ngOnInit() {
+    const params = new URLSearchParams(window.location.search);
+
+    const emailCode = params.get('emailCode');
+    console.log('emailCode: ', emailCode);
+  }
+}
