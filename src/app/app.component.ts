@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthShellComponent } from './shared/auth-shell/auth-shell.component';
+import { UserService } from './services/user/user.service';
 
 @Component({
   selector: 'app-root',
@@ -10,10 +11,19 @@ import { AuthShellComponent } from './shared/auth-shell/auth-shell.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  ngOnInit() {
+  private userService = inject(UserService);
+
+  async ngOnInit() {
     const params = new URLSearchParams(window.location.search);
 
-    const emailCode = params.get('emailCode');
-    console.log('emailCode: ', emailCode);
+    const code = params.get('c');
+    const email = params.get('email');
+    console.log('c: ', code);
+    console.log('email: ', email);
+
+    if(email && code){
+      const response = await this.userService.confirmUserEmail(email, code);
+      console.log('Confirm Email Response: ', response);
+    }
   }
 }
