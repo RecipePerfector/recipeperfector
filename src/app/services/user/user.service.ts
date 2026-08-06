@@ -64,11 +64,11 @@ export class UserService {
     this.loggedIn = isLoggedIn;
   }
 
-  createNewUser(email: string, password: string): void{
-    this.api.callAPIPost('/api/users/register', { email: email, password: password }).then((response: any) => {
-      console.log('create response: ');
-      console.log(response);
-    });
+  async createNewUser(email: string, password: string): Promise<any>{
+    const response = await this.api.callAPIPost('/api/users/register', { email: email, password: password });
+    console.log('createNewUser response: ');
+    console.log(response);
+    return response;
   }
 
   confirmUserEmail(email: string, code: string): Promise<any> {

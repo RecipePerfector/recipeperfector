@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthShellComponent } from './shared/auth-shell/auth-shell.component';
 import { UserService } from './services/user/user.service';
@@ -13,6 +13,8 @@ import { UserService } from './services/user/user.service';
 export class AppComponent {
   private userService = inject(UserService);
 
+  @ViewChild(AuthShellComponent) authShell!: AuthShellComponent;
+
   async ngOnInit() {
     const params = new URLSearchParams(window.location.search);
 
@@ -21,9 +23,15 @@ export class AppComponent {
     console.log('c: ', code);
     console.log('email: ', email);
 
-    if(email && code){
+    if (email && code) {
       const response = await this.userService.confirmUserEmail(email, code);
       console.log('Confirm Email Response: ', response);
+
+      if (response.message === 'Email confirmed successfully') {
+        this.authShell?.closeLoginDialog();
+        this.authShell?.openLoginDialog();
+        this.authShell.confirmationText = 'Your account has been created. You may now login to your account.';
+      }
     }
   }
 }

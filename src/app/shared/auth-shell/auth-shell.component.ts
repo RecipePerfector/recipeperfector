@@ -40,7 +40,7 @@ export class AuthShellComponent {
     this.confirmationText = '';
   }
 
-  submitLogin(): void {
+  async submitLogin(): Promise<void> {
     if (this.usePasswordless) {
       if (this.username.trim()) {
         this.userService.setUserLoggedIn(true);
@@ -51,9 +51,12 @@ export class AuthShellComponent {
 
     //Creating an account?
     if (this.accountMode === 'create') {
-      this.userService.createNewUser(this.username, this.password);
-      //TODO: Show different text based on if the user already existed
-      this.confirmationText = 'We have sent you an email. Open it and click the Confirm Email image to activate your account.';
+      const response = await this.userService.createNewUser(this.username, this.password);
+      if (response.error && response.error === 'Email already in use') {
+        this.confirmationText = 'This email is already registered. Please log in or use a different email.';
+      } else {
+        this.confirmationText = 'We have sent you an email. Open it and click the Confirm Email image to activate your account.';
+      }
     }
   }
     /*if (this.username.trim() && this.password.trim()) {
