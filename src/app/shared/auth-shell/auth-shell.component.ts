@@ -1,11 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { RecipeButtonComponent } from '../recipe-button/recipe-button.component';
 import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-auth-shell',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule, RecipeButtonComponent],
   templateUrl: './auth-shell.component.html',
   styleUrl: './auth-shell.component.css'
 })
