@@ -20,8 +20,6 @@ export class AppComponent {
 
     const code = params.get('c');
     const email = params.get('email');
-    console.log('c: ', code);
-    console.log('email: ', email);
 
     if (email && code) {
       const response = await this.userService.confirmUserEmail(email, code);
@@ -31,6 +29,10 @@ export class AppComponent {
         this.authShell?.closeLoginDialog();
         this.authShell?.openLoginDialog();
         this.authShell.confirmationText = 'Your account has been created. You may now login to your account.';
+      } else if(response.error === 'Email already confirmed') {
+        this.authShell?.closeLoginDialog();
+        this.authShell?.openLoginDialog();
+        this.authShell.confirmationText = 'Your email has already been confirmed. You may now login to your account.';
       }
     }
   }

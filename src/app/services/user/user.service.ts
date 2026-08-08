@@ -71,9 +71,9 @@ export class UserService {
     return response;
   }
 
-  confirmUserEmail(email: string, code: string): Promise<any> {
+  async confirmUserEmail(email: string, code: string): Promise<any> {
     console.log('Code being sent: ', code);
-    const response = this.api.callAPIPost('/api/users/confirm-email', { email: email, code: code });
+    const response = await this.api.callAPIPost('/api/users/confirm-email', { email: email, code: code });
     console.log('confirm response: ');
     console.log(response);
     return response;
