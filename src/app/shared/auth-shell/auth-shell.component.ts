@@ -20,6 +20,7 @@ export class AuthShellComponent {
   accountMode: 'create' | 'existing' = 'existing';
   usePasswordless = false;
   confirmationText = '';
+  isCreatingAccount = false;
 
   get isLoggedIn(): boolean {
     return this.userService.isUserLoggedIn();
@@ -40,6 +41,7 @@ export class AuthShellComponent {
     this.accountMode = 'existing';
     this.usePasswordless = false;
     this.confirmationText = '';
+    this.isCreatingAccount = false;
   }
 
   async submitLogin(): Promise<void> {
@@ -53,11 +55,16 @@ export class AuthShellComponent {
 
     //Creating an account?
     if (this.accountMode === 'create') {
-      const response = await this.userService.createNewUser(this.username, this.password);
-      if (response.error && response.error === 'Email already in use') {
-        this.confirmationText = 'This email is already registered. Please log in or use a different email.';
-      } else {
-        this.confirmationText = 'We have sent you an email. Open it and click the Confirm Email image to activate your account.';
+      this.isCreatingAccount = true;
+      try {
+        const response = await this.userService.createNewUser(this.username, this.password);
+        if (response?.error && response.error === 'Email already in use') {
+          this.confirmationText = 'This email is already registered. Please log in or use a different email.';
+        } else {
+          this.confirmationText = 'We have sent you an email. Open it and click the Confirm Email image to activate your account.';
+        }
+      } finally {
+        this.isCreatingAccount = false;
       }
     }
   }

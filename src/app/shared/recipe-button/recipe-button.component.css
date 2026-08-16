@@ -23,3 +23,24 @@
   padding: 0.7rem 0.95rem;
   cursor: pointer;
 }
+.primary-btn:disabled,
+.primary-btn[disabled]{
+  background: #aaa9a9;
+}
+.loading-spinner {
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-right: 0.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
