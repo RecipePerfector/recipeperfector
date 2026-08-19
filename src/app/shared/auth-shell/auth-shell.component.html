@@ -34,7 +34,7 @@
           </label>
         </div>
 
-        <div *ngIf="accountMode === 'existing'">
+        <div class="passwordless-option" [class.passwordless-option-hidden]="accountMode !== 'existing'">
           <label class="login-toggle">
             <input type="checkbox" [(ngModel)]="usePasswordless" name="usePasswordless" />
             <span>Use passwordless sign-in</span>
@@ -46,7 +46,7 @@
           <input type="text" [(ngModel)]="username" name="username" />
         </label>
 
-        <label class="login-field" *ngIf="!usePasswordless">
+        <label class="login-field" [class.password-field-hidden]="usePasswordless">
           <span>Password</span>
           <input type="password" [(ngModel)]="password" name="password" />
         </label>
