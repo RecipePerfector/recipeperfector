@@ -21,13 +21,10 @@ export class AuthShellComponent {
   usePasswordless = false;
   confirmationText = '';
   isCreatingAccount = false;
+  userImageUrl = '';
 
   get isLoggedIn(): boolean {
     return this.userService.isUserLoggedIn();
-  }
-
-  get userImageUrl(): string {
-    return this.userService.getUserImageURL();
   }
 
   openLoginDialog(): void {
@@ -65,6 +62,15 @@ export class AuthShellComponent {
         }
       } finally {
         this.isCreatingAccount = false;
+      }
+    } else if (this.accountMode === 'existing') {
+      //Logging in with existing account
+      const response = await this.userService.loginUser(this.username, this.password);
+      if (response?.error) {
+        this.confirmationText = 'Login failed. Please check your credentials and try again.';
+      } else {
+        this.userService.setUserLoggedIn(true);
+        this.closeLoginDialog();
       }
     }
   }
