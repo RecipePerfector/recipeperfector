@@ -1,4 +1,6 @@
 <button [class]="btnClass" [attr.type]="type" (click)="onClick()" [disabled]=isButtonLoading>
-  <span *ngIf=isButtonLoading class="loading-spinner" aria-hidden="true"></span>
+  @if (isButtonLoading) {
+    <span class="loading-spinner" aria-hidden="true"></span>
+  }
   <ng-content></ng-content>
 </button>
