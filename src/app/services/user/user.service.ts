@@ -6,23 +6,31 @@ import { Router } from '@angular/router';
 
 
 export class UserService {
+  private readonly authTokenStorageKey = 'recipeperfector_auth_token';
   private teamService: { setSelectedTeam: (team: any) => void } | null = null;
-  private authToken: string | null = null;
+  private authToken: string | null;
 
   loggedIn: boolean = false;
 
-  constructor(private api: ApiService, private router: Router) { }
+  constructor(private api: ApiService, private router: Router) {
+    this.authToken = localStorage.getItem(this.authTokenStorageKey);
+  }
 
   isUserLoggedIn(): boolean {
+    if (!this.loggedIn) {
+      console.log('Checking localStorage');
+      this.loggedIn = localStorage.getItem('loggedIn') === 'true';
+    }
     return this.loggedIn;
   }
 
   setUserLoggedIn(isLoggedIn: boolean): void {
     this.loggedIn = isLoggedIn;
+    localStorage.setItem('loggedIn', isLoggedIn.toString());
   }
 
   getAuthToken(): string | null {
-    return this.authToken;
+    return this.authToken ?? localStorage.getItem(this.authTokenStorageKey);
   }
 
   async createNewUser(email: string, password: string): Promise<any>{
@@ -43,6 +51,11 @@ export class UserService {
   async loginUser(email: string, password: string): Promise<any> {
     const response = await this.api.callAPIPost('/api/users/login', { email: email, password: password });
     this.authToken = response?.['token'] ?? null;
+    if (this.authToken) {
+      localStorage.setItem(this.authTokenStorageKey, this.authToken);
+    } else {
+      localStorage.removeItem(this.authTokenStorageKey);
+    }
     console.log('login response: ');
     console.log(response);
     return response;
