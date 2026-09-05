@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 
 export class UserService {
   private teamService: { setSelectedTeam: (team: any) => void } | null = null;
+  private authToken: string | null = null;
 
   loggedIn: boolean = false;
 
@@ -18,6 +19,10 @@ export class UserService {
 
   setUserLoggedIn(isLoggedIn: boolean): void {
     this.loggedIn = isLoggedIn;
+  }
+
+  getAuthToken(): string | null {
+    return this.authToken;
   }
 
   async createNewUser(email: string, password: string): Promise<any>{
@@ -37,6 +42,7 @@ export class UserService {
 
   async loginUser(email: string, password: string): Promise<any> {
     const response = await this.api.callAPIPost('/api/users/login', { email: email, password: password });
+    this.authToken = response?.['token'] ?? null;
     console.log('login response: ');
     console.log(response);
     return response;

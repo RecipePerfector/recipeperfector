@@ -67,7 +67,7 @@ export class AuthShellComponent {
       //Logging in with existing account
       const response = await this.userService.loginUser(this.username, this.password);
       if (response?.error) {
-        this.confirmationText = 'Login failed. Please check your credentials and try again.';
+        this.confirmationText = response?.error;
       } else {
         this.userService.setUserLoggedIn(true);
         this.closeLoginDialog();

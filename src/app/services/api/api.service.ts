@@ -20,4 +20,16 @@ export class ApiService {
     const jsonResponse = await response.json();
     return jsonResponse;
   }
+
+  async callAPIGet(endpoint: string, token?: string) {
+    const response = await fetch(`${this.apiURL}${endpoint}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      }
+    });
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  }
 }
