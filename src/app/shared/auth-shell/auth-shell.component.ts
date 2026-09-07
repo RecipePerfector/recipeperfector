@@ -2,12 +2,13 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RecipeButtonComponent } from '../recipe-button/recipe-button.component';
+import { AccountMenuComponent } from '../account-menu/account-menu.component';
 import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-auth-shell',
   standalone: true,
-  imports: [FormsModule, CommonModule, RecipeButtonComponent],
+  imports: [FormsModule, CommonModule, RecipeButtonComponent, AccountMenuComponent],
   templateUrl: './auth-shell.component.html',
   styleUrl: './auth-shell.component.css'
 })
@@ -22,6 +23,7 @@ export class AuthShellComponent {
   confirmationText = '';
   isCreatingAccount = false;
   userImageUrl = '';
+  isAccountMenuOpen = false;
 
   get isLoggedIn(): boolean {
     return this.userService.isUserLoggedIn();
@@ -31,8 +33,18 @@ export class AuthShellComponent {
     this.isLoginDialogOpen = true;
   }
 
+  toggleAccountMenu(): void {
+    this.isAccountMenuOpen = !this.isAccountMenuOpen;
+  }
+
+  logout(): void {
+    this.userService.logout();
+    this.isAccountMenuOpen = false;
+  }
+
   closeLoginDialog(): void {
     this.isLoginDialogOpen = false;
+    this.isAccountMenuOpen = false;
     this.username = '';
     this.password = '';
     this.accountMode = 'existing';
@@ -70,14 +82,9 @@ export class AuthShellComponent {
         this.confirmationText = response?.error;
       } else {
         this.userService.setUserLoggedIn(true);
+        this.userService.setUsername(response?.user.username);
         this.closeLoginDialog();
       }
     }
   }
-    /*if (this.username.trim() && this.password.trim()) {
-      //WW Do this after logging in
-      //this.userService.setUserLoggedIn(true);
-      //this.closeLoginDialog();
-      console.log(this.accountMode);
-    }*/
 }

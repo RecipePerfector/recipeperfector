@@ -1,7 +1,8 @@
 <header class="app-header">
   <div class="brand">Recipe Perfector</div>
   <p class="eyebrow">Crowd Source Recipe Perfection</p>
-  <app-recipe-button btnClass="user-menu" type="button" (pressed)="openLoginDialog()">
+  <div class="account-menu-container">
+    <app-recipe-button btnClass="user-menu" type="button" (pressed)="isLoggedIn ? toggleAccountMenu() : openLoginDialog()" [attr.aria-expanded]="isLoggedIn ? isAccountMenuOpen : null" aria-haspopup="menu">
     <span class="user-avatar" aria-hidden="true">
       @if (isLoggedIn && userImageUrl) {
         <img [src]="userImageUrl" alt="User profile" />
@@ -10,7 +11,12 @@
       }
     </span>
     <span class="user-label">{{ isLoggedIn ? 'Account' : 'Login' }}</span>
-  </app-recipe-button>
+    </app-recipe-button>
+
+    @if (isLoggedIn && isAccountMenuOpen) {
+      <app-account-menu (loggedOut)="logout()" />
+    }
+  </div>
 </header>
 
 @if (isLoginDialogOpen) {

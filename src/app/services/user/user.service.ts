@@ -11,14 +11,15 @@ export class UserService {
   private authToken: string | null;
 
   loggedIn: boolean = false;
+  username: string | null = null;
 
   constructor(private api: ApiService, private router: Router) {
     this.authToken = localStorage.getItem(this.authTokenStorageKey);
+    this.username = localStorage.getItem('username');
   }
 
   isUserLoggedIn(): boolean {
     if (!this.loggedIn) {
-      console.log('Checking localStorage');
       this.loggedIn = localStorage.getItem('loggedIn') === 'true';
     }
     return this.loggedIn;
@@ -27,6 +28,24 @@ export class UserService {
   setUserLoggedIn(isLoggedIn: boolean): void {
     this.loggedIn = isLoggedIn;
     localStorage.setItem('loggedIn', isLoggedIn.toString());
+  }
+
+  setUsername(username: string): void {
+    this.username = username;
+    localStorage.setItem('username', username);
+  }
+
+  getUsername(): string | null {
+    return this.username;
+  }
+
+  logout(): void {
+    this.loggedIn = false;
+    this.authToken = null;
+    this.username = null;
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem(this.authTokenStorageKey);
+    localStorage.removeItem('username');
   }
 
   getAuthToken(): string | null {

@@ -52,6 +52,10 @@
   font-weight: 600;
 }
 
+.account-menu-container {
+  position: relative;
+}
+
 .login-dialog-backdrop {
   position: fixed;
   inset: 0;
