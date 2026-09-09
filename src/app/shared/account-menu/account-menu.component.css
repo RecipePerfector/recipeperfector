@@ -2,6 +2,7 @@
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 0;
+  width: max-content;
   min-width: 8rem;
   padding: 0.35rem;
   background: #fff;
@@ -17,7 +18,7 @@
   color: #111827;
   font-size: 0.9rem;
   font-weight: 600;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 
 .account-menu button {
