@@ -233,7 +233,7 @@
 .delete-step-button {
   position: absolute;
   top: 50%;
-  right: 0.5rem;
+  right: 2.35rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -265,6 +265,44 @@
 .delete-step-button:focus-visible {
   background: #fee2e2;
   border-color: #fca5a5;
+  outline: none;
+}
+
+.move-step-button {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.2rem;
+  transform: translateY(-50%);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: #7c2d12;
+  opacity: 0;
+  pointer-events: none;
+  cursor: grab;
+  transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.move-step-button:active {
+  cursor: grabbing;
+}
+
+.move-step-button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: currentColor;
+}
+
+.move-step-button:hover,
+.move-step-button:focus-visible {
+  background: #ffedd5;
+  border-color: #fdba74;
   outline: none;
 }
 
@@ -356,12 +394,19 @@
 
 .editable .numbered-list li {
   cursor: pointer;
-  padding-right: 2.75rem;
+  padding-right: 4.5rem;
 }
 
 .editable .numbered-list li:hover {
   background: #fff7ed;
   border-color: #fed7aa;
+}
+
+.editable .numbered-list li.is-dragging-step {
+  z-index: 1;
+  outline: 2px solid #c2410c;
+  outline-offset: 2px;
+  background: #fff7ed;
 }
 
 .editable .numbered-list li:hover .sequence-number {
@@ -380,8 +425,55 @@
   pointer-events: auto;
 }
 
+.editable .numbered-list li.is-dragging-step .edit-icon,
+.editable .numbered-list li.is-dragging-step .delete-step-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.editable .numbered-list li:hover .move-step-button,
+.editable .numbered-list li:focus-within .move-step-button,
+.editable .numbered-list li .move-step-button:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .editable .numbered-list li .edit-icon {
   cursor: pointer;
+}
+
+.editable.reordering .numbered-list li:hover {
+  background: transparent;
+  border-color: transparent;
+}
+
+.editable.reordering .numbered-list li:hover .sequence-number {
+  opacity: 1;
+}
+
+.editable.reordering .numbered-list li:hover .edit-icon,
+.editable.reordering .numbered-list li:hover .delete-step-button,
+.editable.reordering .numbered-list li:hover .move-step-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.editable.reordering .numbered-list li:focus-within .edit-icon,
+.editable.reordering .numbered-list li:focus-within .delete-step-button,
+.editable.reordering .numbered-list li:focus-within .move-step-button,
+.editable.reordering .numbered-list li .delete-step-button:focus-visible,
+.editable.reordering .numbered-list li .move-step-button:focus-visible {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.editable.reordering .numbered-list li.is-dragging-step {
+  background: #fff7ed;
+}
+
+.editable.reordering .numbered-list li.is-drag-origin .move-step-button {
+  opacity: 0;
+  pointer-events: auto;
 }
 
 @media (max-width: 900px) {

@@ -30,6 +30,13 @@ export class RecipeInstructionComponent implements OnInit {
   errorMessage = '';
   private editingField: 'ingredients' | 'directions' | null = null;
   private editingIndex: number | null = null;
+  private draggedStep: {
+    display: RecipeDisplay;
+    field: 'ingredients' | 'directions';
+    originalSteps: string[];
+    originalIndex: number;
+    currentIndex: number;
+  } | null = null;
   editingDraft = '';
   comparisonSelections = new Set<string>();
   hoveredComparison: { title: string; field: 'ingredients' | 'directions'; index: number } | null = null;
@@ -90,6 +97,99 @@ export class RecipeInstructionComponent implements OnInit {
     }
 
     display[field].splice(index, 1);
+  }
+
+  canDragSteps(): boolean {
+    return this.editingField === null;
+  }
+
+  isDraggingStep(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+    return this.draggedStep?.display === display &&
+      this.draggedStep.field === field &&
+      this.draggedStep.currentIndex === index;
+  }
+
+  isDraggingDisplay(display: RecipeDisplay): boolean {
+    return this.draggedStep?.display === display;
+  }
+
+  isDragOrigin(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+    return this.draggedStep?.display === display &&
+      this.draggedStep.field === field &&
+      this.draggedStep.originalIndex === index;
+  }
+
+  startStepDrag(event: DragEvent, display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+    if (!display.editable || !this.canDragSteps()) {
+      event.preventDefault();
+      return;
+    }
+
+    this.draggedStep = {
+      display,
+      field,
+      originalSteps: [...display[field]],
+      originalIndex: index,
+      currentIndex: index
+    };
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', `${field}:${index}`);
+    }
+  }
+
+  allowStepDrop(
+    event: DragEvent,
+    display: RecipeDisplay,
+    field: 'ingredients' | 'directions',
+    targetIndex: number
+  ): void {
+    const draggedStep = this.draggedStep;
+    if (!display.editable || draggedStep?.display !== display || draggedStep.field !== field) {
+      return;
+    }
+
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+
+    const targetRow = event.currentTarget as HTMLElement;
+    const targetBounds = targetRow.getBoundingClientRect();
+    const insertAfterTarget = event.clientY >= targetBounds.top + targetBounds.height / 2;
+    const insertionIndex = targetIndex + (insertAfterTarget ? 1 : 0);
+    const destinationIndex = Math.max(
+      0,
+      Math.min(insertionIndex > draggedStep.currentIndex ? insertionIndex - 1 : insertionIndex, display[field].length - 1)
+    );
+
+    if (destinationIndex === draggedStep.currentIndex) {
+      return;
+    }
+
+    const [step] = display[field].splice(draggedStep.currentIndex, 1);
+    display[field].splice(destinationIndex, 0, step);
+    draggedStep.currentIndex = destinationIndex;
+  }
+
+  dropStep(event: DragEvent, display: RecipeDisplay, field: 'ingredients' | 'directions'): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (this.draggedStep?.display === display && this.draggedStep.field === field) {
+      this.draggedStep = null;
+    }
+  }
+
+  endStepDrag(event: DragEvent): void {
+    if (this.draggedStep) {
+      const { display, field, originalSteps } = this.draggedStep;
+      display[field].splice(0, display[field].length, ...originalSteps);
+    }
+    this.draggedStep = null;
+    if (event.currentTarget instanceof HTMLElement) {
+      event.currentTarget.blur();
+    }
   }
 
   isComparisonSelected(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {

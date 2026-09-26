@@ -5,7 +5,11 @@
     @if (recipeDisplays.length > 0) {
       <div class="recipe-comparison">
         @for (display of recipeDisplays; track display.title) {
-          <article class="instruction-card" [class.editable]="display.editable">
+          <article
+            class="instruction-card"
+            [class.editable]="display.editable"
+            [class.reordering]="isDraggingDisplay(display)"
+          >
             <header class="instruction-header">
               <span aria-hidden="true"></span>
               <p class="eyebrow">{{ display.title }}</p>
@@ -34,6 +38,8 @@
                 @for (ingredient of display.ingredients; track $index) {
                   <li
                     [class.is-editing]="display.editable && isEditing('ingredients', $index)"
+                    [class.is-dragging-step]="isDraggingStep(display, 'ingredients', $index)"
+                    [class.is-drag-origin]="isDragOrigin(display, 'ingredients', $index)"
                     [class.is-selected]="isComparisonSelected(display, 'ingredients', $index)"
                     [class.comparison-green]="isComparisonGreen(display, 'ingredients', $index)"
                     [class.comparison-red]="isComparisonRed(display, 'ingredients', $index)"
@@ -42,6 +48,8 @@
                     (mouseenter)="setHoveredComparison(display, 'ingredients', $index, true)"
                     (mouseleave)="setHoveredComparison(display, 'ingredients', $index, false)"
                     (click)="startEditing(display, 'ingredients', $index)"
+                    (dragover)="allowStepDrop($event, display, 'ingredients', $index)"
+                    (drop)="dropStep($event, display, 'ingredients')"
                   >
                     <span class="sequence-marker">
                       <span class="sequence-number">{{ $index + 1 }}</span>
@@ -98,6 +106,25 @@
                           <path d="m18 6-12 12M6 6l12 12" />
                         </svg>
                       </button>
+                      <button
+                        class="move-step-button"
+                        type="button"
+                        [draggable]="canDragSteps()"
+                        [attr.aria-label]="'Move ingredient step ' + ($index + 1)"
+                        title="Drag to move step"
+                        (click)="$event.stopPropagation()"
+                        (dragstart)="$event.stopPropagation(); startStepDrag($event, display, 'ingredients', $index)"
+                        (dragend)="endStepDrag($event)"
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                          <circle cx="8" cy="5" r="1.5" />
+                          <circle cx="16" cy="5" r="1.5" />
+                          <circle cx="8" cy="12" r="1.5" />
+                          <circle cx="16" cy="12" r="1.5" />
+                          <circle cx="8" cy="19" r="1.5" />
+                          <circle cx="16" cy="19" r="1.5" />
+                        </svg>
+                      </button>
                     }
                     @if (display.editable && isEditing('ingredients', $index)) {
                       <div class="edit-actions">
@@ -147,6 +174,8 @@
                 @for (direction of display.directions; track $index) {
                   <li
                     [class.is-editing]="display.editable && isEditing('directions', $index)"
+                    [class.is-dragging-step]="isDraggingStep(display, 'directions', $index)"
+                    [class.is-drag-origin]="isDragOrigin(display, 'directions', $index)"
                     [class.is-selected]="isComparisonSelected(display, 'directions', $index)"
                     [class.comparison-green]="isComparisonGreen(display, 'directions', $index)"
                     [class.comparison-red]="isComparisonRed(display, 'directions', $index)"
@@ -155,6 +184,8 @@
                     (mouseenter)="setHoveredComparison(display, 'directions', $index, true)"
                     (mouseleave)="setHoveredComparison(display, 'directions', $index, false)"
                     (click)="startEditing(display, 'directions', $index)"
+                    (dragover)="allowStepDrop($event, display, 'directions', $index)"
+                    (drop)="dropStep($event, display, 'directions')"
                   >
                     <span class="sequence-marker">
                       <span class="sequence-number">{{ $index + 1 }}</span>
@@ -209,6 +240,25 @@
                       >
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                           <path d="m18 6-12 12M6 6l12 12" />
+                        </svg>
+                      </button>
+                      <button
+                        class="move-step-button"
+                        type="button"
+                        [draggable]="canDragSteps()"
+                        [attr.aria-label]="'Move direction step ' + ($index + 1)"
+                        title="Drag to move step"
+                        (click)="$event.stopPropagation()"
+                        (dragstart)="$event.stopPropagation(); startStepDrag($event, display, 'directions', $index)"
+                        (dragend)="endStepDrag($event)"
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                          <circle cx="8" cy="5" r="1.5" />
+                          <circle cx="16" cy="5" r="1.5" />
+                          <circle cx="8" cy="12" r="1.5" />
+                          <circle cx="16" cy="12" r="1.5" />
+                          <circle cx="8" cy="19" r="1.5" />
+                          <circle cx="16" cy="19" r="1.5" />
                         </svg>
                       </button>
                     }
