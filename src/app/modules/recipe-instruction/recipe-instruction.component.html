@@ -37,6 +37,10 @@
                     [class.is-selected]="isComparisonSelected(display, 'ingredients', $index)"
                     [class.comparison-green]="isComparisonGreen(display, 'ingredients', $index)"
                     [class.comparison-red]="isComparisonRed(display, 'ingredients', $index)"
+                    [class.comparison-flash-green]="isComparisonFlash(display, 'ingredients', $index, 'green')"
+                    [class.comparison-flash-red]="isComparisonFlash(display, 'ingredients', $index, 'red')"
+                    (mouseenter)="setHoveredComparison(display, 'ingredients', $index, true)"
+                    (mouseleave)="setHoveredComparison(display, 'ingredients', $index, false)"
                     (click)="startEditing(display, 'ingredients', $index)"
                   >
                     <span class="sequence-marker">
@@ -133,6 +137,10 @@
                     [class.is-selected]="isComparisonSelected(display, 'directions', $index)"
                     [class.comparison-green]="isComparisonGreen(display, 'directions', $index)"
                     [class.comparison-red]="isComparisonRed(display, 'directions', $index)"
+                    [class.comparison-flash-green]="isComparisonFlash(display, 'directions', $index, 'green')"
+                    [class.comparison-flash-red]="isComparisonFlash(display, 'directions', $index, 'red')"
+                    (mouseenter)="setHoveredComparison(display, 'directions', $index, true)"
+                    (mouseleave)="setHoveredComparison(display, 'directions', $index, false)"
                     (click)="startEditing(display, 'directions', $index)"
                   >
                     <span class="sequence-marker">

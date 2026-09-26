@@ -177,6 +177,44 @@
   border-color: #fca5a5;
 }
 
+.comparison-flash-green {
+  animation: comparison-flash-green 1.8s ease-in-out 2;
+}
+
+.comparison-flash-red {
+  animation: comparison-flash-red 1.8s ease-in-out 2;
+}
+
+@keyframes comparison-flash-green {
+  0%, 100% {
+    background: transparent;
+    border-color: transparent;
+  }
+  20%, 50%, 80% {
+    background: #dcfce7;
+    border-color: #86efac;
+  }
+  35%, 65% {
+    background: #bbf7d0;
+    border-color: #4ade80;
+  }
+}
+
+@keyframes comparison-flash-red {
+  0%, 100% {
+    background: transparent;
+    border-color: transparent;
+  }
+  20%, 50%, 80% {
+    background: #fee2e2;
+    border-color: #fca5a5;
+  }
+  35%, 65% {
+    background: #fecaca;
+    border-color: #f87171;
+  }
+}
+
 .numbered-list li.is-selected {
   background: #dcfce7;
   border-color: #86efac;
@@ -188,6 +226,7 @@
   width: 1.5rem;
   min-height: 1.5rem;
   place-items: center;
+  cursor: pointer;
 }
 
 .edit-icon svg {
@@ -198,6 +237,7 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2;
+  cursor: pointer;
 }
 
 .row-editor {
@@ -275,6 +315,10 @@
   outline-offset: 1px;
 }
 
+.editable .numbered-list li {
+  cursor: pointer;
+}
+
 .editable .numbered-list li:hover {
   background: #fff7ed;
   border-color: #fed7aa;
@@ -286,6 +330,11 @@
 
 .editable .numbered-list li:hover .edit-icon {
   opacity: 1;
+  cursor: pointer;
+}
+
+.editable .numbered-list li .edit-icon {
+  cursor: pointer;
 }
 
 @media (max-width: 900px) {

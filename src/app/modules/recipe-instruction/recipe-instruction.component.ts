@@ -33,6 +33,7 @@ export class RecipeInstructionComponent implements OnInit {
   editingDraft = '';
   comparisonSelections = new Set<string>();
   hoveredComparison: { title: string; field: 'ingredients' | 'directions'; index: number } | null = null;
+  flashComparison: { title: string; field: 'ingredients' | 'directions'; index: number; variant: 'green' | 'red' } | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -95,34 +96,71 @@ export class RecipeInstructionComponent implements OnInit {
       this.hoveredComparison.index === index;
   }
 
+  isComparisonFlash(
+    display: RecipeDisplay,
+    field: 'ingredients' | 'directions',
+    index: number,
+    variant: 'green' | 'red'
+  ): boolean {
+    return !!this.flashComparison &&
+      this.flashComparison.title === display.title &&
+      this.flashComparison.field === field &&
+      this.flashComparison.index === index &&
+      this.flashComparison.variant === variant;
+  }
+
   setHoveredComparison(
     display: RecipeDisplay,
     field: 'ingredients' | 'directions',
     index: number,
     isHovering: boolean
   ): void {
-    if (isHovering) {
-      this.hoveredComparison = { title: display.title, field, index };
+    if (display.title === 'Yours (Editable)') {
       return;
     }
 
-    if (this.hoveredComparison?.title === display.title && this.hoveredComparison.field === field && this.hoveredComparison.index === index) {
+    if (!isHovering) {
       this.hoveredComparison = null;
+      return;
     }
+
+    this.hoveredComparison = { title: display.title, field, index };
   }
 
-  toggleComparisonSelection(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+  triggerComparisonFlash(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
     const yours = this.recipeDisplays.find((recipe) => recipe.title === 'Yours (Editable)');
     if (yours && display.title !== 'Yours (Editable)') {
       yours[field][index] = display[field][index];
     }
 
-    const key = `${display.title}-${field}-${index}`;
-    if (this.comparisonSelections.has(key)) {
-      this.comparisonSelections.delete(key);
-    } else {
-      this.comparisonSelections.add(key);
+    this.flashComparison = {
+      title: display.title,
+      field,
+      index,
+      variant: 'green'
+    };
+
+    if (yours && display.title !== 'Yours (Editable)') {
+      this.flashComparison = {
+        title: 'Yours (Editable)',
+        field,
+        index,
+        variant: 'green'
+      };
+      window.setTimeout(() => {
+        this.flashComparison = null;
+      }, 1800);
+      return;
     }
+
+    window.setTimeout(() => {
+      this.flashComparison = null;
+    }, 1800);
+  }
+
+  toggleComparisonSelection(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+    this.triggerComparisonFlash(display, field, index);
+    this.comparisonSelections.delete(`${display.title}-${field}-${index}`);
   }
 
   acceptEditing(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
