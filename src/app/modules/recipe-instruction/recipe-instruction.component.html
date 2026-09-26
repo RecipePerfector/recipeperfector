@@ -2,32 +2,169 @@
   <section class="instructions-page">
     <a class="back-link" routerLink="/">← Back to recipes</a>
 
-    @if (recipe) {
-      <article class="instruction-card">
-        <header class="instruction-header">
-          <p class="eyebrow">Recipe instructions</p>
-          <h1>{{ recipe.title }}</h1>
-          <p class="source">Source: {{ recipe.source }}</p>
-        </header>
+    @if (recipeDisplays.length > 0) {
+      <div class="recipe-comparison">
+        @for (display of recipeDisplays; track display.title) {
+          <article class="instruction-card" [class.editable]="display.editable">
+            <header class="instruction-header">
+              <span aria-hidden="true"></span>
+              <p class="eyebrow">{{ display.title }}</p>
+              @if (display.editable) {
+                <button
+                  class="pdf-button"
+                  type="button"
+                  aria-label="Download Yours recipe as PDF"
+                  title="Download as PDF"
+                  (click)="requestPdfDownload(display)"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 2h8l5 5v15H6z" />
+                    <path d="M14 2v6h6" />
+                    <text x="7" y="17" font-size="5">PDF</text>
+                  </svg>
+                </button>
+              } @else {
+                <span aria-hidden="true"></span>
+              }
+            </header>
 
-        <div class="content-grid">
-          <section>
-            <h2>Ingredients</h2>
-            <ul>
-              <li *ngFor="let ingredient of recipe.ingredients">{{ ingredient }}</li>
-            </ul>
-          </section>
+            <section class="recipe-section">
+              <h2>Ingredients</h2>
+              <ol class="numbered-list">
+                @for (ingredient of display.ingredients; track $index) {
+                  <li
+                    [class.is-editing]="display.editable && isEditing('ingredients', $index)"
+                    (click)="startEditing(display, 'ingredients', $index)"
+                  >
+                    <span class="sequence-number">{{ $index + 1 }}</span>
+                    <span class="edit-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" focusable="false">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
+                      </svg>
+                    </span>
+                    @if (display.editable && isEditing('ingredients', $index)) {
+                      <div class="edit-actions">
+                        <button
+                          class="edit-action accept-action"
+                          type="button"
+                          aria-label="Accept ingredient change"
+                          title="Accept"
+                          (click)="$event.stopPropagation(); acceptEditing(display, 'ingredients', $index)"
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="m5 12 4 4L19 6" />
+                          </svg>
+                        </button>
+                        <button
+                          class="edit-action cancel-action"
+                          type="button"
+                          aria-label="Cancel ingredient change"
+                          title="Cancel"
+                          (click)="$event.stopPropagation(); cancelEditing()"
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="m18 6-12 12M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <textarea
+                        class="row-editor"
+                        [(ngModel)]="editingDraft"
+                        (click)="$event.stopPropagation()"
+                        (keydown.escape)="cancelEditing()"
+                        [attr.aria-label]="'Edit ingredient ' + ($index + 1)"
+                        autofocus
+                      ></textarea>
+                    } @else {
+                      <span class="row-value">{{ ingredient }}</span>
+                    }
+                  </li>
+                }
+              </ol>
+            </section>
 
-          <section>
-            <h2>Directions</h2>
-            <ol>
-              <li *ngFor="let direction of recipe.directions">{{ direction }}</li>
-            </ol>
-          </section>
-        </div>
-      </article>
+            <section class="recipe-section">
+              <h2>Directions</h2>
+              <ol class="numbered-list">
+                @for (direction of display.directions; track $index) {
+                  <li
+                    [class.is-editing]="display.editable && isEditing('directions', $index)"
+                    (click)="startEditing(display, 'directions', $index)"
+                  >
+                    <span class="sequence-number">{{ $index + 1 }}</span>
+                    <span class="edit-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" focusable="false">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
+                      </svg>
+                    </span>
+                    @if (display.editable && isEditing('directions', $index)) {
+                      <div class="edit-actions">
+                        <button
+                          class="edit-action accept-action"
+                          type="button"
+                          aria-label="Accept direction change"
+                          title="Accept"
+                          (click)="$event.stopPropagation(); acceptEditing(display, 'directions', $index)"
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="m5 12 4 4L19 6" />
+                          </svg>
+                        </button>
+                        <button
+                          class="edit-action cancel-action"
+                          type="button"
+                          aria-label="Cancel direction change"
+                          title="Cancel"
+                          (click)="$event.stopPropagation(); cancelEditing()"
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="m18 6-12 12M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <textarea
+                        class="row-editor"
+                        [(ngModel)]="editingDraft"
+                        (click)="$event.stopPropagation()"
+                        (keydown.escape)="cancelEditing()"
+                        [attr.aria-label]="'Edit direction ' + ($index + 1)"
+                        autofocus
+                      ></textarea>
+                    } @else {
+                      <span class="row-value">{{ direction }}</span>
+                    }
+                  </li>
+                }
+              </ol>
+            </section>
+          </article>
+        }
+      </div>
     } @else {
       <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (pdfConfirmationDisplay) {
+      <div class="modal-backdrop" (keydown.escape)="closePdfConfirmation()">
+        <section
+          class="pdf-confirmation-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pdf-modal-title"
+          aria-describedby="pdf-modal-description"
+        >
+          <h2 id="pdf-modal-title">Download recipe PDF?</h2>
+          <p id="pdf-modal-description">
+            Save {{ pdfConfirmationDisplay.recipeTitle }} with your current ingredients and directions.
+          </p>
+          <div class="modal-actions">
+            <button class="modal-button secondary" type="button" (click)="closePdfConfirmation()">No</button>
+            <button class="modal-button primary" type="button" (click)="confirmPdfDownload()">Yes</button>
+          </div>
+        </section>
+      </div>
     }
   </section>
 } @else {
