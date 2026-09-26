@@ -105,6 +105,7 @@
 }
 
 .numbered-list li {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
@@ -229,6 +230,44 @@
   cursor: pointer;
 }
 
+.delete-step-button {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.15rem;
+  transform: translateY(-50%);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: #b91c1c;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.delete-step-button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.delete-step-button:hover,
+.delete-step-button:focus-visible {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  outline: none;
+}
+
 .edit-icon svg {
   width: 1rem;
   height: 1rem;
@@ -317,6 +356,7 @@
 
 .editable .numbered-list li {
   cursor: pointer;
+  padding-right: 2.75rem;
 }
 
 .editable .numbered-list li:hover {
@@ -331,6 +371,13 @@
 .editable .numbered-list li:hover .edit-icon {
   opacity: 1;
   cursor: pointer;
+}
+
+.editable .numbered-list li:hover .delete-step-button,
+.editable .numbered-list li:focus-within .delete-step-button,
+.editable .numbered-list li .delete-step-button:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .editable .numbered-list li .edit-icon {

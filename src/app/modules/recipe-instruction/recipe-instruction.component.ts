@@ -78,6 +78,20 @@ export class RecipeInstructionComponent implements OnInit {
     return this.editingField === field && this.editingIndex === index;
   }
 
+  removeStep(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+    if (!display.editable || index < 0 || index >= display[field].length) {
+      return;
+    }
+
+    if (this.editingField === field && this.editingIndex === index) {
+      this.cancelEditing();
+    } else if (this.editingField === field && this.editingIndex !== null && this.editingIndex > index) {
+      this.editingIndex -= 1;
+    }
+
+    display[field].splice(index, 1);
+  }
+
   isComparisonSelected(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
     return this.comparisonSelections.has(`${display.title}-${field}-${index}`);
   }
