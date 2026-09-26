@@ -44,7 +44,8 @@
   display: grid;
   grid-template-columns: 20% 1fr 20%;
   align-items: center;
-  padding: 0.9rem 1rem;
+  height: 4rem;
+  padding: 0.5rem 1rem;
   background: #7c2d12;
   border-radius: 6px;
   text-align: center;
@@ -52,8 +53,8 @@
 
 .pdf-button {
   display: grid;
-  width: 100%;
-  aspect-ratio: 1;
+  width: 2.5rem;
+  height: 2.5rem;
   place-items: center;
   padding: 0.3rem;
   color: #fff;
@@ -105,33 +106,88 @@
 
 .numbered-list li {
   display: grid;
-  grid-template-columns: 1.5rem minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
   gap: 0.5rem;
   padding: 0.65rem;
   line-height: 1.55;
   border: 1px solid transparent;
   border-radius: 6px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.sequence-number,
+.sequence-marker,
 .edit-icon {
   grid-column: 1;
   grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sequence-number {
   display: grid;
   width: 1.5rem;
   min-height: 1.5rem;
   place-items: center;
-}
-
-.sequence-number {
   color: #7c2d12;
   font-weight: 700;
+}
+
+.comparison-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  padding: 0.1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: #7c2d12;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.comparison-arrow:hover,
+.comparison-arrow:focus-visible,
+.comparison-arrow[aria-pressed='true'] {
+  background: #dcfce7;
+  border-color: #86efac;
+  outline: none;
+}
+
+.comparison-arrow svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.comparison-green {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.comparison-red {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.numbered-list li.is-selected {
+  background: #dcfce7;
+  border-color: #86efac;
 }
 
 .edit-icon {
   opacity: 0;
   color: #7c2d12;
+  width: 1.5rem;
+  min-height: 1.5rem;
+  place-items: center;
 }
 
 .edit-icon svg {

@@ -31,6 +31,8 @@ export class RecipeInstructionComponent implements OnInit {
   private editingField: 'ingredients' | 'directions' | null = null;
   private editingIndex: number | null = null;
   editingDraft = '';
+  comparisonSelections = new Set<string>();
+  hoveredComparison: { title: string; field: 'ingredients' | 'directions'; index: number } | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -73,6 +75,54 @@ export class RecipeInstructionComponent implements OnInit {
 
   isEditing(field: 'ingredients' | 'directions', index: number): boolean {
     return this.editingField === field && this.editingIndex === index;
+  }
+
+  isComparisonSelected(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+    return this.comparisonSelections.has(`${display.title}-${field}-${index}`);
+  }
+
+  isComparisonGreen(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+    return !!this.hoveredComparison &&
+      this.hoveredComparison.title === display.title &&
+      this.hoveredComparison.field === field &&
+      this.hoveredComparison.index === index;
+  }
+
+  isComparisonRed(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+    return !!this.hoveredComparison &&
+      display.title === 'Yours (Editable)' &&
+      this.hoveredComparison.field === field &&
+      this.hoveredComparison.index === index;
+  }
+
+  setHoveredComparison(
+    display: RecipeDisplay,
+    field: 'ingredients' | 'directions',
+    index: number,
+    isHovering: boolean
+  ): void {
+    if (isHovering) {
+      this.hoveredComparison = { title: display.title, field, index };
+      return;
+    }
+
+    if (this.hoveredComparison?.title === display.title && this.hoveredComparison.field === field && this.hoveredComparison.index === index) {
+      this.hoveredComparison = null;
+    }
+  }
+
+  toggleComparisonSelection(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+    const yours = this.recipeDisplays.find((recipe) => recipe.title === 'Yours (Editable)');
+    if (yours && display.title !== 'Yours (Editable)') {
+      yours[field][index] = display[field][index];
+    }
+
+    const key = `${display.title}-${field}-${index}`;
+    if (this.comparisonSelections.has(key)) {
+      this.comparisonSelections.delete(key);
+    } else {
+      this.comparisonSelections.add(key);
+    }
   }
 
   acceptEditing(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {

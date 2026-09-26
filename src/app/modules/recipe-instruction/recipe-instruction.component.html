@@ -34,9 +34,48 @@
                 @for (ingredient of display.ingredients; track $index) {
                   <li
                     [class.is-editing]="display.editable && isEditing('ingredients', $index)"
+                    [class.is-selected]="isComparisonSelected(display, 'ingredients', $index)"
+                    [class.comparison-green]="isComparisonGreen(display, 'ingredients', $index)"
+                    [class.comparison-red]="isComparisonRed(display, 'ingredients', $index)"
                     (click)="startEditing(display, 'ingredients', $index)"
                   >
-                    <span class="sequence-number">{{ $index + 1 }}</span>
+                    <span class="sequence-marker">
+                      <span class="sequence-number">{{ $index + 1 }}</span>
+                      @if (display.title === 'Original') {
+                        <button
+                          class="comparison-arrow single-arrow"
+                          type="button"
+                          [attr.aria-label]="'Select ingredient ' + ($index + 1)"
+                          [attr.aria-pressed]="isComparisonSelected(display, 'ingredients', $index)"
+                          (mouseenter)="setHoveredComparison(display, 'ingredients', $index, true)"
+                          (mouseleave)="setHoveredComparison(display, 'ingredients', $index, false)"
+                          (focus)="setHoveredComparison(display, 'ingredients', $index, true)"
+                          (blur)="setHoveredComparison(display, 'ingredients', $index, false)"
+                          (click)="$event.stopPropagation(); toggleComparisonSelection(display, 'ingredients', $index)"
+                        >
+                          <svg viewBox="0 0 24 24" focusable="false">
+                            <path d="M15 18 9 12l6-6" />
+                          </svg>
+                        </button>
+                      } @else if (display.title === 'Crowd Sourced') {
+                        <button
+                          class="comparison-arrow double-arrow"
+                          type="button"
+                          [attr.aria-label]="'Select ingredient ' + ($index + 1)"
+                          [attr.aria-pressed]="isComparisonSelected(display, 'ingredients', $index)"
+                          (mouseenter)="setHoveredComparison(display, 'ingredients', $index, true)"
+                          (mouseleave)="setHoveredComparison(display, 'ingredients', $index, false)"
+                          (focus)="setHoveredComparison(display, 'ingredients', $index, true)"
+                          (blur)="setHoveredComparison(display, 'ingredients', $index, false)"
+                          (click)="$event.stopPropagation(); toggleComparisonSelection(display, 'ingredients', $index)"
+                        >
+                          <svg viewBox="0 0 24 24" focusable="false">
+                            <path d="M17 18 11 12l6-6" />
+                            <path d="M11 18 5 12l6-6" />
+                          </svg>
+                        </button>
+                      }
+                    </span>
                     <span class="edit-icon" aria-hidden="true">
                       <svg viewBox="0 0 24 24" focusable="false">
                         <path d="M12 20h9" />
@@ -73,6 +112,7 @@
                         [(ngModel)]="editingDraft"
                         (click)="$event.stopPropagation()"
                         (keydown.escape)="cancelEditing()"
+                        (blur)="acceptEditing(display, 'ingredients', $index)"
                         [attr.aria-label]="'Edit ingredient ' + ($index + 1)"
                         autofocus
                       ></textarea>
@@ -90,9 +130,48 @@
                 @for (direction of display.directions; track $index) {
                   <li
                     [class.is-editing]="display.editable && isEditing('directions', $index)"
+                    [class.is-selected]="isComparisonSelected(display, 'directions', $index)"
+                    [class.comparison-green]="isComparisonGreen(display, 'directions', $index)"
+                    [class.comparison-red]="isComparisonRed(display, 'directions', $index)"
                     (click)="startEditing(display, 'directions', $index)"
                   >
-                    <span class="sequence-number">{{ $index + 1 }}</span>
+                    <span class="sequence-marker">
+                      <span class="sequence-number">{{ $index + 1 }}</span>
+                      @if (display.title === 'Original') {
+                        <button
+                          class="comparison-arrow single-arrow"
+                          type="button"
+                          [attr.aria-label]="'Select direction ' + ($index + 1)"
+                          [attr.aria-pressed]="isComparisonSelected(display, 'directions', $index)"
+                          (mouseenter)="setHoveredComparison(display, 'directions', $index, true)"
+                          (mouseleave)="setHoveredComparison(display, 'directions', $index, false)"
+                          (focus)="setHoveredComparison(display, 'directions', $index, true)"
+                          (blur)="setHoveredComparison(display, 'directions', $index, false)"
+                          (click)="$event.stopPropagation(); toggleComparisonSelection(display, 'directions', $index)"
+                        >
+                          <svg viewBox="0 0 24 24" focusable="false">
+                            <path d="M15 18 9 12l6-6" />
+                          </svg>
+                        </button>
+                      } @else if (display.title === 'Crowd Sourced') {
+                        <button
+                          class="comparison-arrow double-arrow"
+                          type="button"
+                          [attr.aria-label]="'Select direction ' + ($index + 1)"
+                          [attr.aria-pressed]="isComparisonSelected(display, 'directions', $index)"
+                          (mouseenter)="setHoveredComparison(display, 'directions', $index, true)"
+                          (mouseleave)="setHoveredComparison(display, 'directions', $index, false)"
+                          (focus)="setHoveredComparison(display, 'directions', $index, true)"
+                          (blur)="setHoveredComparison(display, 'directions', $index, false)"
+                          (click)="$event.stopPropagation(); toggleComparisonSelection(display, 'directions', $index)"
+                        >
+                          <svg viewBox="0 0 24 24" focusable="false">
+                            <path d="M17 18 11 12l6-6" />
+                            <path d="M11 18 5 12l6-6" />
+                          </svg>
+                        </button>
+                      }
+                    </span>
                     <span class="edit-icon" aria-hidden="true">
                       <svg viewBox="0 0 24 24" focusable="false">
                         <path d="M12 20h9" />
@@ -129,6 +208,7 @@
                         [(ngModel)]="editingDraft"
                         (click)="$event.stopPropagation()"
                         (keydown.escape)="cancelEditing()"
+                        (blur)="acceptEditing(display, 'directions', $index)"
                         [attr.aria-label]="'Edit direction ' + ($index + 1)"
                         autofocus
                       ></textarea>
