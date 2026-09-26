@@ -3,7 +3,7 @@
     <a class="back-link" routerLink="/">← Back to recipes</a>
 
     @if (recipeDisplays.length > 0) {
-      <div class="recipe-comparison">
+      <div class="recipe-comparison" #comparisonPanels>
         @for (display of recipeDisplays; track display.title) {
           <article
             class="instruction-card"
@@ -37,6 +37,9 @@
               <ol class="numbered-list">
                 @for (ingredient of display.ingredients; track $index) {
                   <li
+                    data-step-field="ingredients"
+                    [attr.data-step-index]="$index"
+                    [attr.title]="display.editable && !isEditing('ingredients', $index) ? 'Edit' : null"
                     [class.is-editing]="display.editable && isEditing('ingredients', $index)"
                     [class.is-dragging-step]="isDraggingStep(display, 'ingredients', $index)"
                     [class.is-drag-origin]="isDragOrigin(display, 'ingredients', $index)"
@@ -173,6 +176,9 @@
               <ol class="numbered-list">
                 @for (direction of display.directions; track $index) {
                   <li
+                    data-step-field="directions"
+                    [attr.data-step-index]="$index"
+                    [attr.title]="display.editable && !isEditing('directions', $index) ? 'Edit' : null"
                     [class.is-editing]="display.editable && isEditing('directions', $index)"
                     [class.is-dragging-step]="isDraggingStep(display, 'directions', $index)"
                     [class.is-drag-origin]="isDragOrigin(display, 'directions', $index)"

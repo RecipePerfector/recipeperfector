@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -23,7 +23,8 @@ interface RecipeDisplay extends RecipeData {
   templateUrl: './recipe-instruction.component.html',
   styleUrl: './recipe-instruction.component.css'
 })
-export class RecipeInstructionComponent implements OnInit {
+export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
+  @ViewChild('comparisonPanels') private comparisonPanels?: ElementRef<HTMLElement>;
   recipeDisplays: RecipeDisplay[] = [];
   pdfConfirmationDisplay: RecipeDisplay | null = null;
   isLoading = true;
@@ -37,6 +38,7 @@ export class RecipeInstructionComponent implements OnInit {
     originalIndex: number;
     currentIndex: number;
   } | null = null;
+  private stepRowLayoutSignature = '';
   editingDraft = '';
   comparisonSelections = new Set<string>();
   hoveredComparison: { title: string; field: 'ingredients' | 'directions'; index: number } | null = null;
@@ -60,6 +62,52 @@ export class RecipeInstructionComponent implements OnInit {
         this.errorMessage = 'Unable to load recipe instructions.';
         this.isLoading = false;
       }
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    this.syncStepRowHeights();
+  }
+
+  @HostListener('window:resize')
+  handleViewportResize(): void {
+    this.stepRowLayoutSignature = '';
+    this.syncStepRowHeights();
+  }
+
+  private syncStepRowHeights(): void {
+    const container = this.comparisonPanels?.nativeElement;
+    if (!container) {
+      return;
+    }
+
+    const rows = Array.from(container.querySelectorAll<HTMLElement>('[data-step-field][data-step-index]'));
+    if (rows.length === 0) {
+      return;
+    }
+
+    const signature = JSON.stringify({
+      editingField: this.editingField,
+      editingIndex: this.editingIndex,
+      editingDraft: this.editingDraft,
+      rows: rows.map((row) => [row.dataset['stepField'], row.dataset['stepIndex'], row.clientWidth, row.textContent])
+    });
+    if (signature === this.stepRowLayoutSignature) {
+      return;
+    }
+    this.stepRowLayoutSignature = signature;
+
+    rows.forEach((row) => row.style.minHeight = '');
+
+    const tallestByStep = new Map<string, number>();
+    rows.forEach((row) => {
+      const key = `${row.dataset['stepField']}:${row.dataset['stepIndex']}`;
+      tallestByStep.set(key, Math.max(tallestByStep.get(key) ?? 0, row.getBoundingClientRect().height));
+    });
+
+    rows.forEach((row) => {
+      const key = `${row.dataset['stepField']}:${row.dataset['stepIndex']}`;
+      row.style.minHeight = `${Math.ceil(tallestByStep.get(key) ?? 0)}px`;
     });
   }
 
