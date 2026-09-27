@@ -1,38 +1,27 @@
 @if (displayEditable) {
-  <button
-    class="delete-step-button"
-    type="button"
-    [attr.aria-label]="'Remove ' + stepLabel + ' step ' + (index + 1)"
-    [attr.aria-disabled]="!canDragSteps"
-    title="Delete step"
-    (mousedown)="handleStepActionMouseDown($event)"
-    (click)="handleDeleteClick($event)"
-  >
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="m18 6-12 12M6 6l12 12" />
-    </svg>
-  </button>
-  <button
-    class="move-step-button"
-    type="button"
-    [draggable]="canDragSteps"
-    [attr.aria-label]="'Move ' + stepLabel + ' step ' + (index + 1)"
-    [attr.aria-disabled]="!canDragSteps"
-    title="Drag to move step"
-    (mousedown)="handleStepActionMouseDown($event)"
-    (click)="handleBlockedActionClick($event)"
-    (dragstart)="handleDragStart($event)"
-    (dragend)="handleDragEnd($event)"
-  >
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="8" cy="5" r="1.5" />
-      <circle cx="16" cy="5" r="1.5" />
-      <circle cx="8" cy="12" r="1.5" />
-      <circle cx="16" cy="12" r="1.5" />
-      <circle cx="8" cy="19" r="1.5" />
-      <circle cx="16" cy="19" r="1.5" />
-    </svg>
-  </button>
+  <app-recipe-row-delete-button
+    [stepLabel]="stepLabel"
+    [index]="index"
+    [canDragSteps]="canDragSteps"
+    [rowHovered]="isRowHovered"
+    [isEditing]="isEditing"
+    [isReordering]="isReordering"
+    (buttonMouseDown)="stepActionMouseDown.emit($event)"
+    (deleteRequested)="deleteRequested.emit($event)"
+  />
+  <app-recipe-row-drag-button
+    [stepLabel]="stepLabel"
+    [index]="index"
+    [canDragSteps]="canDragSteps"
+    [rowHovered]="isRowHovered"
+    [isEditing]="isEditing"
+    [isReordering]="isReordering"
+    [isDragOrigin]="isDragOrigin"
+    (buttonMouseDown)="stepActionMouseDown.emit($event)"
+    (blockedAction)="blockedAction.emit()"
+    (dragStart)="dragStartRequested.emit($event)"
+    (dragEnd)="dragEndRequested.emit($event)"
+  />
 }
 @if (displayEditable && isEditing) {
   <div class="edit-actions" [class.blink-edit-actions]="isFlashingEditActions">

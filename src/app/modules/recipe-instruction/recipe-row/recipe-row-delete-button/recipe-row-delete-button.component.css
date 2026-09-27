@@ -1,0 +1,57 @@
+:host {
+  display: contents;
+}
+
+.delete-step-button {
+  position: absolute;
+  top: 50%;
+  right: 2.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.15rem;
+  transform: translateY(-50%);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: #b91c1c;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.delete-step-button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.delete-step-button:hover,
+.delete-step-button:focus-visible {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  outline: none;
+}
+
+.delete-step-button[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+:host(.row-hovered:not(.is-editing)) .delete-step-button,
+.delete-step-button:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+:host(.reordering.row-hovered) .delete-step-button,
+:host(.reordering:focus-within) .delete-step-button {
+  opacity: 0;
+  pointer-events: none;
+}

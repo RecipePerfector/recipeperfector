@@ -1,11 +1,13 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RecipeField } from '../recipe-row.component';
+import { RecipeRowDeleteButtonComponent } from '../recipe-row-delete-button/recipe-row-delete-button.component';
+import { RecipeRowDragButtonComponent } from '../recipe-row-drag-button/recipe-row-drag-button.component';
 
 @Component({
   selector: 'app-recipe-row-editable',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RecipeRowDeleteButtonComponent, RecipeRowDragButtonComponent],
   templateUrl: './recipe-row-editable.component.html',
   styleUrl: './recipe-row-editable.component.css'
 })
@@ -57,29 +59,6 @@ export class RecipeRowEditableComponent {
 
   get stepLabel(): string {
     return this.field === 'ingredients' ? 'ingredient' : 'direction';
-  }
-
-  handleDeleteClick(event: MouseEvent): void {
-    event.stopPropagation();
-    this.deleteRequested.emit(event);
-  }
-
-  handleBlockedActionClick(event: MouseEvent): void {
-    event.stopPropagation();
-    this.blockedAction.emit();
-  }
-
-  handleStepActionMouseDown(event: MouseEvent): void {
-    this.stepActionMouseDown.emit(event);
-  }
-
-  handleDragStart(event: DragEvent): void {
-    event.stopPropagation();
-    this.dragStartRequested.emit(event);
-  }
-
-  handleDragEnd(event: DragEvent): void {
-    this.dragEndRequested.emit(event);
   }
 
   handleEditorClick(event: MouseEvent): void {

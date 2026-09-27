@@ -2,79 +2,6 @@
   display: contents;
 }
 
-.delete-step-button,
-.move-step-button {
-  position: absolute;
-  top: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  transform: translateY(-50%);
-  border: 1px solid transparent;
-  border-radius: 999px;
-  background: transparent;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
-}
-
-.delete-step-button {
-  right: 2.35rem;
-  padding: 0.15rem;
-  color: #b91c1c;
-  cursor: pointer;
-}
-
-.delete-step-button svg,
-.move-step-button svg {
-  width: 0.9rem;
-  height: 0.9rem;
-}
-
-.delete-step-button svg {
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
-}
-
-.delete-step-button:hover,
-.delete-step-button:focus-visible {
-  background: #fee2e2;
-  border-color: #fca5a5;
-  outline: none;
-}
-
-.delete-step-button[aria-disabled='true'],
-.move-step-button[aria-disabled='true'] {
-  cursor: not-allowed;
-}
-
-.move-step-button {
-  right: 0.5rem;
-  padding: 0.2rem;
-  color: #7c2d12;
-  cursor: grab;
-}
-
-.move-step-button:active {
-  cursor: grabbing;
-}
-
-.move-step-button svg {
-  fill: currentColor;
-}
-
-.move-step-button:hover,
-.move-step-button:focus-visible {
-  background: #ffedd5;
-  border-color: #fdba74;
-  outline: none;
-}
-
 .row-editor {
   grid-column: 2;
   align-self: stretch;
@@ -161,30 +88,4 @@
   outline-offset: 1px;
 }
 
-:host(.editable.is-editing) .delete-step-button,
-:host(.editable.is-editing) .move-step-button {
-  display: none;
-}
 
-:host(.editable.row-hovered) .delete-step-button,
-:host(.editable.row-hovered) .move-step-button,
-:host(.editable .delete-step-button:focus-visible),
-:host(.editable .move-step-button:focus-visible) {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-:host(.editable.reordering.row-hovered) .delete-step-button,
-:host(.editable.reordering.row-hovered) .move-step-button,
-:host(.editable.reordering:focus-within) .delete-step-button,
-:host(.editable.reordering:focus-within) .move-step-button,
-:host(.editable.reordering .delete-step-button:focus-visible),
-:host(.editable.reordering .move-step-button:focus-visible) {
-  opacity: 0;
-  pointer-events: none;
-}
-
-:host(.editable.reordering.is-drag-origin) .move-step-button {
-  opacity: 0;
-  pointer-events: auto;
-}

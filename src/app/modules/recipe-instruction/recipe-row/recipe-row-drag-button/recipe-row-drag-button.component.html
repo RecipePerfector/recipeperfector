@@ -1,0 +1,21 @@
+<button
+  class="move-step-button"
+  type="button"
+  [draggable]="canDragSteps"
+  [attr.aria-label]="'Move ' + stepLabel + ' step ' + (index + 1)"
+  [attr.aria-disabled]="!canDragSteps"
+  title="Drag to move step"
+  (mousedown)="handleMouseDown($event)"
+  (click)="handleClick($event)"
+  (dragstart)="handleDragStart($event)"
+  (dragend)="handleDragEnd($event)"
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <circle cx="8" cy="5" r="1.5" />
+    <circle cx="16" cy="5" r="1.5" />
+    <circle cx="8" cy="12" r="1.5" />
+    <circle cx="16" cy="12" r="1.5" />
+    <circle cx="8" cy="19" r="1.5" />
+    <circle cx="16" cy="19" r="1.5" />
+  </svg>
+</button>

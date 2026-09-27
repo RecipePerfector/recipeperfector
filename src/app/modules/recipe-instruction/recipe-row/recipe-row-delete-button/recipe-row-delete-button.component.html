@@ -1,0 +1,13 @@
+<button
+  class="delete-step-button"
+  type="button"
+  [attr.aria-label]="'Remove ' + stepLabel + ' step ' + (index + 1)"
+  [attr.aria-disabled]="!canDragSteps"
+  title="Delete step"
+  (mousedown)="handleMouseDown($event)"
+  (click)="handleClick($event)"
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="m18 6-12 12M6 6l12 12" />
+  </svg>
+</button>
