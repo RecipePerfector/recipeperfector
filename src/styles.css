@@ -13,6 +13,175 @@ body {
   box-sizing: border-box;
 }
 
+app-recipe-instruction li[app-recipe-row] .sequence-marker {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+app-recipe-instruction li[app-recipe-row] .sequence-number {
+  display: grid;
+  width: 1.5rem;
+  min-height: 1.5rem;
+  place-items: center;
+  color: #7c2d12;
+  font-weight: 700;
+}
+
+app-recipe-instruction li[app-recipe-row].editable {
+  cursor: pointer;
+}
+
+app-recipe-instruction li[app-recipe-row].editable:hover:not(.is-editing),
+app-recipe-instruction li[app-recipe-row].editable:focus-within:not(.is-editing) {
+  padding-right: 4.5rem;
+}
+
+app-recipe-instruction li[app-recipe-row].editable:hover {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+app-recipe-instruction li[app-recipe-row].is-dragging-step {
+  z-index: 1;
+  outline: 2px solid #c2410c;
+  outline-offset: 2px;
+  background: #fff7ed;
+}
+
+app-recipe-instruction li[app-recipe-row].is-editing .sequence-number,
+app-recipe-instruction li[app-recipe-row].is-editing .edit-icon {
+  display: none;
+}
+
+app-recipe-instruction li[app-recipe-row].editable:hover .sequence-number {
+  opacity: 0;
+}
+
+app-recipe-instruction li[app-recipe-row].editable.reordering:hover .sequence-number {
+  opacity: 1;
+}
+
+app-recipe-instruction li[app-recipe-row] .comparison-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  padding: 0.1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: #7c2d12;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+app-recipe-instruction li[app-recipe-row] .comparison-arrow:hover,
+app-recipe-instruction li[app-recipe-row] .comparison-arrow:focus-visible,
+app-recipe-instruction li[app-recipe-row] .comparison-arrow[aria-pressed='true'] {
+  background: #dcfce7;
+  border-color: #86efac;
+  outline: none;
+}
+
+app-recipe-instruction li[app-recipe-row] .comparison-arrow svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+app-recipe-instruction li[app-recipe-row].comparison-green,
+app-recipe-instruction li[app-recipe-row].is-selected {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+app-recipe-instruction li[app-recipe-row].comparison-red {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+app-recipe-instruction li[app-recipe-row].comparison-flash-green {
+  animation: comparison-flash-green 1.8s ease-in-out 2;
+}
+
+app-recipe-instruction li[app-recipe-row].comparison-flash-red {
+  animation: comparison-flash-red 1.8s ease-in-out 2;
+}
+
+app-recipe-instruction li[app-recipe-row].editable:hover .edit-icon {
+  opacity: 1;
+}
+
+app-recipe-instruction li[app-recipe-row].is-dragging-step .edit-icon,
+app-recipe-instruction li[app-recipe-row].is-dragging-step .delete-step-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+app-recipe-instruction li[app-recipe-row].editable.reordering:hover {
+  background: transparent;
+  border-color: transparent;
+}
+
+app-recipe-instruction li[app-recipe-row].editable.reordering:hover .edit-icon,
+app-recipe-instruction li[app-recipe-row].editable.reordering:hover .delete-step-button,
+app-recipe-instruction li[app-recipe-row].editable.reordering:hover .move-step-button,
+app-recipe-instruction li[app-recipe-row].editable.reordering:focus-within .edit-icon,
+app-recipe-instruction li[app-recipe-row].editable.reordering:focus-within .delete-step-button,
+app-recipe-instruction li[app-recipe-row].editable.reordering:focus-within .move-step-button,
+app-recipe-instruction li[app-recipe-row].editable.reordering .delete-step-button:focus-visible,
+app-recipe-instruction li[app-recipe-row].editable.reordering .move-step-button:focus-visible {
+  opacity: 0;
+  pointer-events: none;
+}
+
+app-recipe-instruction li[app-recipe-row].editable.reordering.is-dragging-step {
+  background: #fff7ed;
+}
+
+app-recipe-instruction li[app-recipe-row].editable.reordering.is-drag-origin .move-step-button {
+  opacity: 0;
+  pointer-events: auto;
+}
+
+@keyframes comparison-flash-green {
+  0%, 100% {
+    background: transparent;
+    border-color: transparent;
+  }
+  20%, 50%, 80% {
+    background: #dcfce7;
+    border-color: #86efac;
+  }
+  35%, 65% {
+    background: #bbf7d0;
+    border-color: #4ade80;
+  }
+}
+
+@keyframes comparison-flash-red {
+  0%, 100% {
+    background: transparent;
+    border-color: transparent;
+  }
+  20%, 50%, 80% {
+    background: #fee2e2;
+    border-color: #fca5a5;
+  }
+  35%, 65% {
+    background: #fecaca;
+    border-color: #f87171;
+  }
+}
+
 app-recipe-instruction .modal-backdrop {
   position: fixed;
   z-index: 10;
