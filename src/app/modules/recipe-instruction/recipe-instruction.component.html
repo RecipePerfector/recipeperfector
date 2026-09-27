@@ -117,8 +117,10 @@
                         class="delete-step-button"
                         type="button"
                         [attr.aria-label]="'Remove ingredient step ' + ($index + 1)"
+                        [attr.aria-disabled]="!canDragSteps()"
                         title="Delete step"
-                        (click)="$event.stopPropagation(); removeStep(display, 'ingredients', $index)"
+                        (mousedown)="holdEditorFocusForStepAction($event)"
+                        (click)="handleDeleteStepClick($event, display, 'ingredients', $index)"
                       >
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                           <path d="m18 6-12 12M6 6l12 12" />
@@ -129,8 +131,10 @@
                         type="button"
                         [draggable]="canDragSteps()"
                         [attr.aria-label]="'Move ingredient step ' + ($index + 1)"
+                        [attr.aria-disabled]="!canDragSteps()"
                         title="Drag to move step"
-                        (click)="$event.stopPropagation()"
+                        (mousedown)="holdEditorFocusForStepAction($event)"
+                        (click)="$event.stopPropagation(); flashEditingActionsForBlockedAction(display, 'ingredients', $index)"
                         (dragstart)="$event.stopPropagation(); startStepDrag($event, display, 'ingredients', $index)"
                         (dragend)="endStepDrag($event)"
                       >
@@ -145,7 +149,7 @@
                       </button>
                     }
                     @if (display.editable && isEditing('ingredients', $index)) {
-                      <div class="edit-actions">
+                      <div class="edit-actions" [class.blink-edit-actions]="isFlashingEditActions('ingredients', $index)">
                         <button
                           class="edit-action accept-action"
                           type="button"
@@ -271,8 +275,10 @@
                         class="delete-step-button"
                         type="button"
                         [attr.aria-label]="'Remove direction step ' + ($index + 1)"
+                        [attr.aria-disabled]="!canDragSteps()"
                         title="Delete step"
-                        (click)="$event.stopPropagation(); removeStep(display, 'directions', $index)"
+                        (mousedown)="holdEditorFocusForStepAction($event)"
+                        (click)="handleDeleteStepClick($event, display, 'directions', $index)"
                       >
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                           <path d="m18 6-12 12M6 6l12 12" />
@@ -283,8 +289,10 @@
                         type="button"
                         [draggable]="canDragSteps()"
                         [attr.aria-label]="'Move direction step ' + ($index + 1)"
+                        [attr.aria-disabled]="!canDragSteps()"
                         title="Drag to move step"
-                        (click)="$event.stopPropagation()"
+                        (mousedown)="holdEditorFocusForStepAction($event)"
+                        (click)="$event.stopPropagation(); flashEditingActionsForBlockedAction(display, 'directions', $index)"
                         (dragstart)="$event.stopPropagation(); startStepDrag($event, display, 'directions', $index)"
                         (dragend)="endStepDrag($event)"
                       >
@@ -299,7 +307,7 @@
                       </button>
                     }
                     @if (display.editable && isEditing('directions', $index)) {
-                      <div class="edit-actions">
+                      <div class="edit-actions" [class.blink-edit-actions]="isFlashingEditActions('directions', $index)">
                         <button
                           class="edit-action accept-action"
                           type="button"

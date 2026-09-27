@@ -40,6 +40,8 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   } | null = null;
   private stepRowLayoutSignature = '';
   private undoToastTimeout: number | null = null;
+  private editActionsFlashTimeout: number | null = null;
+  flashingEditActions: { field: 'ingredients' | 'directions'; index: number } | null = null;
   pendingStepUpdate: {
     display: RecipeDisplay;
     field: 'ingredients' | 'directions';
@@ -166,8 +168,62 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     display[field].splice(index, 1);
   }
 
+  handleDeleteStepClick(
+    event: MouseEvent,
+    display: RecipeDisplay,
+    field: 'ingredients' | 'directions',
+    index: number
+  ): void {
+    event.stopPropagation();
+    if (!this.canDragSteps()) {
+      this.flashEditingActionsForBlockedAction(display, field, index);
+      return;
+    }
+
+    this.removeStep(display, field, index);
+  }
+
   canDragSteps(): boolean {
     return this.editingField === null;
+  }
+
+  holdEditorFocusForStepAction(event: MouseEvent): void {
+    if (!this.canDragSteps()) {
+      event.preventDefault();
+    }
+  }
+
+  flashEditingActionsForBlockedAction(
+    display: RecipeDisplay,
+    field: 'ingredients' | 'directions',
+    index: number
+  ): void {
+    if (!display.editable || this.editingField === null || this.editingIndex === null || this.isEditing(field, index)) {
+      return;
+    }
+
+    const editingTarget = { field: this.editingField, index: this.editingIndex };
+    if (this.editActionsFlashTimeout !== null) {
+      window.clearTimeout(this.editActionsFlashTimeout);
+    }
+
+    this.flashingEditActions = null;
+    this.editActionsFlashTimeout = window.setTimeout(() => {
+      if (!this.isEditing(editingTarget.field, editingTarget.index)) {
+        this.editActionsFlashTimeout = null;
+        return;
+      }
+
+      this.flashingEditActions = editingTarget;
+      this.editActionsFlashTimeout = window.setTimeout(() => {
+        this.flashingEditActions = null;
+        this.editActionsFlashTimeout = null;
+      }, 900);
+    }, 0);
+  }
+
+  isFlashingEditActions(field: 'ingredients' | 'directions', index: number): boolean {
+    return this.flashingEditActions?.field === field && this.flashingEditActions.index === index;
   }
 
   isDraggingStep(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
