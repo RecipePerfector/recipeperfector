@@ -1,0 +1,72 @@
+@if (displayEditable) {
+  <button
+    class="delete-step-button"
+    type="button"
+    [attr.aria-label]="'Remove ' + stepLabel + ' step ' + (index + 1)"
+    [attr.aria-disabled]="!canDragSteps"
+    title="Delete step"
+    (mousedown)="handleStepActionMouseDown($event)"
+    (click)="handleDeleteClick($event)"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="m18 6-12 12M6 6l12 12" />
+    </svg>
+  </button>
+  <button
+    class="move-step-button"
+    type="button"
+    [draggable]="canDragSteps"
+    [attr.aria-label]="'Move ' + stepLabel + ' step ' + (index + 1)"
+    [attr.aria-disabled]="!canDragSteps"
+    title="Drag to move step"
+    (mousedown)="handleStepActionMouseDown($event)"
+    (click)="handleBlockedActionClick($event)"
+    (dragstart)="handleDragStart($event)"
+    (dragend)="handleDragEnd($event)"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="8" cy="5" r="1.5" />
+      <circle cx="16" cy="5" r="1.5" />
+      <circle cx="8" cy="12" r="1.5" />
+      <circle cx="16" cy="12" r="1.5" />
+      <circle cx="8" cy="19" r="1.5" />
+      <circle cx="16" cy="19" r="1.5" />
+    </svg>
+  </button>
+}
+@if (displayEditable && isEditing) {
+  <div class="edit-actions" [class.blink-edit-actions]="isFlashingEditActions">
+    <button
+      class="edit-action accept-action"
+      type="button"
+      [attr.aria-label]="'Accept ' + stepLabel + ' change'"
+      title="Accept"
+      (click)="handleAcceptClick($event)"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="m5 12 4 4L19 6" />
+      </svg>
+    </button>
+    <button
+      class="edit-action cancel-action"
+      type="button"
+      [attr.aria-label]="'Cancel ' + stepLabel + ' change'"
+      title="Cancel"
+      (click)="handleCancelClick($event)"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="m18 6-12 12M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  <textarea
+    class="row-editor"
+    [ngModel]="editingDraft"
+    (ngModelChange)="editingDraftChange.emit($event)"
+    (click)="handleEditorClick($event)"
+    (keydown.escape)="cancelRequested.emit()"
+    (blur)="acceptRequested.emit()"
+    [attr.aria-label]="'Edit ' + stepLabel + ' ' + (index + 1)"
+    autofocus
+  ></textarea>
+}

@@ -1,0 +1,62 @@
+<span class="sequence-marker">
+  <span class="sequence-number">{{ index + 1 }}</span>
+  @if (showSingleArrow) {
+    <button
+      class="comparison-arrow single-arrow"
+      type="button"
+      [attr.aria-label]="'Select ' + stepLabel + ' ' + (index + 1)"
+      [attr.aria-pressed]="isSelected"
+      (focus)="handleComparisonFocus(true)"
+      (blur)="handleComparisonFocus(false)"
+      (click)="handleComparisonSelection($event)"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M15 18 9 12l6-6" />
+      </svg>
+    </button>
+  } @else if (showDoubleArrow) {
+    <button
+      class="comparison-arrow double-arrow"
+      type="button"
+      [attr.aria-label]="'Select ' + stepLabel + ' ' + (index + 1)"
+      [attr.aria-pressed]="isSelected"
+      (focus)="handleComparisonFocus(true)"
+      (blur)="handleComparisonFocus(false)"
+      (click)="handleComparisonSelection($event)"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M17 18 11 12l6-6" />
+        <path d="M11 18 5 12l6-6" />
+      </svg>
+    </button>
+  }
+</span>
+<span class="edit-icon" aria-hidden="true">
+  <svg viewBox="0 0 24 24" focusable="false">
+    <path d="M12 20h9" />
+    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
+  </svg>
+</span>
+<app-recipe-row-editable
+  [displayEditable]="display.editable"
+  [field]="field"
+  [index]="index"
+  [isEditing]="isEditing"
+  [editingDraft]="editingDraft"
+  [canDragSteps]="canDragSteps"
+  [isFlashingEditActions]="isFlashingEditActions"
+  [isReordering]="isReordering"
+  [isDragOrigin]="isDragOrigin"
+  [isRowHovered]="rowHovered"
+  (editingDraftChange)="editingDraftChange.emit($event)"
+  (deleteRequested)="deleteRequested.emit($event)"
+  (blockedAction)="blockedAction.emit()"
+  (stepActionMouseDown)="stepActionMouseDown.emit($event)"
+  (dragStartRequested)="dragStartRequested.emit($event)"
+  (dragEndRequested)="dragEndRequested.emit($event)"
+  (acceptRequested)="acceptRequested.emit()"
+  (cancelRequested)="cancelRequested.emit()"
+></app-recipe-row-editable>
+@if (!isEditing) {
+  <span class="row-value">{{ stepValue }}</span>
+}

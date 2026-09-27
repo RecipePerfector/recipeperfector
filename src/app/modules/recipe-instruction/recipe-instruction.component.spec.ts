@@ -71,6 +71,10 @@ describe('RecipeInstructionComponent', () => {
     const previousValue = display.ingredients[0];
     component.startEditing(display, 'ingredients', 0);
     component.editingDraft = 'Updated ingredient';
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.is-editing .row-value')).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).querySelector('.is-editing .row-editor')).not.toBeNull();
 
     component.acceptEditing(display, 'ingredients', 0);
     fixture.detectChanges();
@@ -172,4 +176,17 @@ describe('RecipeInstructionComponent', () => {
     fixture.detectChanges();
     expect(compiled.querySelector('.edit-actions.blink-edit-actions')).toBeNull();
   }));
+
+  it('should reveal the Delete and Drag buttons when an editable row is hovered', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const row = compiled.querySelector<HTMLLIElement>(
+      'li.editable[data-step-field="ingredients"][data-step-index="0"]'
+    )!;
+    row.dispatchEvent(new MouseEvent('mouseenter'));
+    fixture.detectChanges();
+
+    const editableContent = row.querySelector<HTMLElement>('app-recipe-row-editable')!;
+    expect(row.classList.contains('row-hovered')).toBeTrue();
+    expect(editableContent.classList.contains('row-hovered')).toBeTrue();
+  });
 });

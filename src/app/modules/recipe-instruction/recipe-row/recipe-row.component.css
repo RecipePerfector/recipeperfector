@@ -1,0 +1,378 @@
+:host {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.5rem;
+  padding: 0.65rem;
+  line-height: 1.55;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+:host(.editable) {
+  cursor: pointer;
+}
+
+:host(.editable:hover:not(.is-editing)),
+:host(.editable:focus-within:not(.is-editing)) {
+  padding-right: 4.5rem;
+}
+
+:host(.editable:hover) {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+:host(.is-dragging-step) {
+  z-index: 1;
+  outline: 2px solid #c2410c;
+  outline-offset: 2px;
+  background: #fff7ed;
+}
+
+.sequence-marker,
+.edit-icon {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sequence-number {
+  display: grid;
+  width: 1.5rem;
+  min-height: 1.5rem;
+  place-items: center;
+  color: #7c2d12;
+  font-weight: 700;
+}
+
+.comparison-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  padding: 0.1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: #7c2d12;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.comparison-arrow:hover,
+.comparison-arrow:focus-visible,
+.comparison-arrow[aria-pressed='true'] {
+  background: #dcfce7;
+  border-color: #86efac;
+  outline: none;
+}
+
+.comparison-arrow svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+:host(.comparison-green) {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+:host(.comparison-red) {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+:host(.comparison-flash-green) {
+  animation: comparison-flash-green 1.8s ease-in-out 2;
+}
+
+:host(.comparison-flash-red) {
+  animation: comparison-flash-red 1.8s ease-in-out 2;
+}
+
+@keyframes comparison-flash-green {
+  0%, 100% {
+    background: transparent;
+    border-color: transparent;
+  }
+  20%, 50%, 80% {
+    background: #dcfce7;
+    border-color: #86efac;
+  }
+  35%, 65% {
+    background: #bbf7d0;
+    border-color: #4ade80;
+  }
+}
+
+@keyframes comparison-flash-red {
+  0%, 100% {
+    background: transparent;
+    border-color: transparent;
+  }
+  20%, 50%, 80% {
+    background: #fee2e2;
+    border-color: #fca5a5;
+  }
+  35%, 65% {
+    background: #fecaca;
+    border-color: #f87171;
+  }
+}
+
+:host(.is-selected) {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.edit-icon {
+  opacity: 0;
+  color: #7c2d12;
+  width: 1.5rem;
+  min-height: 1.5rem;
+  place-items: center;
+  cursor: pointer;
+}
+
+.delete-step-button,
+.move-step-button {
+  position: absolute;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  transform: translateY(-50%);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.delete-step-button {
+  right: 2.35rem;
+  padding: 0.15rem;
+  color: #b91c1c;
+  cursor: pointer;
+}
+
+.delete-step-button svg,
+.move-step-button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.delete-step-button svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.delete-step-button:hover,
+.delete-step-button:focus-visible {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  outline: none;
+}
+
+.delete-step-button[aria-disabled='true'],
+.move-step-button[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+.move-step-button {
+  right: 0.5rem;
+  padding: 0.2rem;
+  color: #7c2d12;
+  cursor: grab;
+}
+
+.move-step-button:active {
+  cursor: grabbing;
+}
+
+.move-step-button svg {
+  fill: currentColor;
+}
+
+.move-step-button:hover,
+.move-step-button:focus-visible {
+  background: #ffedd5;
+  border-color: #fdba74;
+  outline: none;
+}
+
+.edit-icon svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+.row-editor {
+  grid-column: 2;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 5.5rem;
+  padding: 0.5rem;
+  border: 1px solid #c2410c;
+  border-radius: 4px;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  resize: vertical;
+}
+
+.edit-actions {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.0875rem;
+}
+
+@keyframes edit-action-blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0.2;
+  }
+}
+
+.blink-edit-actions .edit-action {
+  animation: edit-action-blink 0.45s ease-in-out 2;
+}
+
+.edit-action {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0.25rem;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.edit-action svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.accept-action {
+  color: #15803d;
+}
+
+.accept-action:hover {
+  background: #dcfce7;
+}
+
+.cancel-action {
+  color: #b91c1c;
+}
+
+.cancel-action:hover {
+  background: #fee2e2;
+}
+
+.edit-action:focus-visible {
+  outline: 2px solid #c2410c;
+  outline-offset: 1px;
+}
+
+:host(.is-editing) .sequence-number,
+:host(.is-editing) .edit-icon {
+  display: none;
+}
+
+:host(.editable.is-editing) .delete-step-button,
+:host(.editable.is-editing) .move-step-button {
+  display: none;
+}
+
+.row-editor:focus {
+  outline: 2px solid #fed7aa;
+  outline-offset: 1px;
+}
+
+:host(.editable:hover) .sequence-number {
+  opacity: 0;
+}
+
+:host(.editable:hover) .edit-icon {
+  opacity: 1;
+}
+
+:host(.editable:hover) .delete-step-button,
+:host(.editable) .delete-step-button:focus-visible,
+:host(.editable:hover) .move-step-button,
+:host(.editable) .move-step-button:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+:host(.is-dragging-step) .edit-icon,
+:host(.is-dragging-step) .delete-step-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+:host(.editable.reordering:hover) {
+  background: transparent;
+  border-color: transparent;
+}
+
+:host(.editable.reordering:hover) .sequence-number {
+  opacity: 1;
+}
+
+:host(.editable.reordering:hover) .edit-icon,
+:host(.editable.reordering:hover) .delete-step-button,
+:host(.editable.reordering:hover) .move-step-button,
+:host(.editable.reordering:focus-within) .edit-icon,
+:host(.editable.reordering:focus-within) .delete-step-button,
+:host(.editable.reordering:focus-within) .move-step-button,
+:host(.editable.reordering) .delete-step-button:focus-visible,
+:host(.editable.reordering) .move-step-button:focus-visible {
+  opacity: 0;
+  pointer-events: none;
+}
+
+:host(.editable.reordering.is-dragging-step) {
+  background: #fff7ed;
+}
+
+:host(.editable.reordering.is-drag-origin) .move-step-button {
+  opacity: 0;
+  pointer-events: auto;
+}

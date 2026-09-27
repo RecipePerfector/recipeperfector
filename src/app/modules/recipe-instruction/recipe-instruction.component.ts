@@ -1,8 +1,8 @@
 import { AfterViewChecked, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RecipePageHeadingComponent } from './recipe-page-heading/recipe-page-heading.component';
+import { RecipeDisplay, RecipeField, RecipeRowComponent } from './recipe-row/recipe-row.component';
 
 interface RecipeData {
   title: string;
@@ -10,22 +10,17 @@ interface RecipeData {
   directions: string[];
 }
 
-interface RecipeDisplay extends RecipeData {
-  title: string;
-  recipeTitle: string;
-  editable: boolean;
-}
-
 @Component({
   selector: 'app-recipe-instruction',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, RecipePageHeadingComponent],
+  imports: [CommonModule, HttpClientModule, RecipePageHeadingComponent, RecipeRowComponent],
   templateUrl: './recipe-instruction.component.html',
   styleUrl: './recipe-instruction.component.css'
 })
 export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   @ViewChild('comparisonPanels') private comparisonPanels?: ElementRef<HTMLElement>;
   recipeDisplays: RecipeDisplay[] = [];
+  readonly stepFields: RecipeField[] = ['ingredients', 'directions'];
   pdfConfirmationDisplay: RecipeDisplay | null = null;
   isLoading = true;
   errorMessage = '';
@@ -160,7 +155,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  addStep(display: RecipeDisplay, field: 'ingredients' | 'directions'): void {
+  addStep(display: RecipeDisplay, field: RecipeField): void {
     if (!display.editable) {
       return;
     }
@@ -171,7 +166,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     this.pendingStepScroll = { field, index };
   }
 
-  startEditing(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+  startEditing(display: RecipeDisplay, field: RecipeField, index: number): void {
     if (!display.editable) {
       return;
     }
@@ -189,11 +184,11 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     this.editingDraft = display[field][index];
   }
 
-  isEditing(field: 'ingredients' | 'directions', index: number): boolean {
+  isEditing(field: RecipeField, index: number): boolean {
     return this.editingField === field && this.editingIndex === index;
   }
 
-  removeStep(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+  removeStep(display: RecipeDisplay, field: RecipeField, index: number): void {
     if (!display.editable || index < 0 || index >= display[field].length) {
       return;
     }
@@ -210,7 +205,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   handleDeleteStepClick(
     event: MouseEvent,
     display: RecipeDisplay,
-    field: 'ingredients' | 'directions',
+    field: RecipeField,
     index: number
   ): void {
     event.stopPropagation();
@@ -265,7 +260,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     return this.flashingEditActions?.field === field && this.flashingEditActions.index === index;
   }
 
-  isDraggingStep(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+  isDraggingStep(display: RecipeDisplay, field: RecipeField, index: number): boolean {
     return this.draggedStep?.display === display &&
       this.draggedStep.field === field &&
       this.draggedStep.currentIndex === index;
@@ -275,13 +270,13 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     return this.draggedStep?.display === display;
   }
 
-  isDragOrigin(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+  isDragOrigin(display: RecipeDisplay, field: RecipeField, index: number): boolean {
     return this.draggedStep?.display === display &&
       this.draggedStep.field === field &&
       this.draggedStep.originalIndex === index;
   }
 
-  startStepDrag(event: DragEvent, display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+  startStepDrag(event: DragEvent, display: RecipeDisplay, field: RecipeField, index: number): void {
     if (!display.editable || !this.canDragSteps()) {
       event.preventDefault();
       return;
@@ -303,7 +298,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   allowStepDrop(
     event: DragEvent,
     display: RecipeDisplay,
-    field: 'ingredients' | 'directions',
+    field: RecipeField,
     targetIndex: number
   ): void {
     const draggedStep = this.draggedStep;
@@ -334,7 +329,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     draggedStep.currentIndex = destinationIndex;
   }
 
-  dropStep(event: DragEvent, display: RecipeDisplay, field: 'ingredients' | 'directions'): void {
+  dropStep(event: DragEvent, display: RecipeDisplay, field: RecipeField): void {
     event.preventDefault();
     event.stopPropagation();
 
@@ -354,18 +349,18 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  isComparisonSelected(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+  isComparisonSelected(display: RecipeDisplay, field: RecipeField, index: number): boolean {
     return this.comparisonSelections.has(`${display.title}-${field}-${index}`);
   }
 
-  isComparisonGreen(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+  isComparisonGreen(display: RecipeDisplay, field: RecipeField, index: number): boolean {
     return !!this.hoveredComparison &&
       this.hoveredComparison.title === display.title &&
       this.hoveredComparison.field === field &&
       this.hoveredComparison.index === index;
   }
 
-  isComparisonRed(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): boolean {
+  isComparisonRed(display: RecipeDisplay, field: RecipeField, index: number): boolean {
     return !!this.hoveredComparison &&
       display.title === 'Yours (Editable)' &&
       this.hoveredComparison.field === field &&
@@ -374,7 +369,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
 
   isComparisonFlash(
     display: RecipeDisplay,
-    field: 'ingredients' | 'directions',
+    field: RecipeField,
     index: number,
     variant: 'green' | 'red'
   ): boolean {
@@ -387,7 +382,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
 
   setHoveredComparison(
     display: RecipeDisplay,
-    field: 'ingredients' | 'directions',
+    field: RecipeField,
     index: number,
     isHovering: boolean
   ): void {
@@ -487,12 +482,12 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  toggleComparisonSelection(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+  toggleComparisonSelection(display: RecipeDisplay, field: RecipeField, index: number): void {
     this.triggerComparisonFlash(display, field, index);
     this.comparisonSelections.delete(`${display.title}-${field}-${index}`);
   }
 
-  acceptEditing(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+  acceptEditing(display: RecipeDisplay, field: RecipeField, index: number): void {
     if (!this.isEditing(field, index)) {
       return;
     }
