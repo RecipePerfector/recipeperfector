@@ -22,9 +22,23 @@ describe('RecipeInstructionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should render the recipe title from the sample data', () => {
+  it('should render the recipe title from the sample data in the page heading', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('1-2-3 Jambalaya');
+    expect(compiled.querySelector('.recipe-page-title')?.textContent).toContain('Kalua Pig in a Slow Cooker');
+  });
+
+  it('should allow editing and saving the recipe title', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    compiled.querySelector<HTMLButtonElement>('.recipe-title-trigger')!.click();
+    fixture.detectChanges();
+
+    expect(compiled.querySelector('.recipe-title-input')).not.toBeNull();
+    component.recipeTitleDraft = 'Sunday Supper';
+    compiled.querySelector<HTMLButtonElement>('.save-title-action')!.click();
+    fixture.detectChanges();
+
+    expect(compiled.querySelector('.recipe-page-title')?.textContent).toContain('Sunday Supper');
+    expect(component.recipeDisplays.every((display) => display.recipeTitle === 'Sunday Supper')).toBeTrue();
   });
 
   it('should show an undo toast after accepting an edited step', () => {

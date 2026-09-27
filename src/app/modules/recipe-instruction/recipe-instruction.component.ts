@@ -26,6 +26,8 @@ interface RecipeDisplay extends RecipeData {
 export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   @ViewChild('comparisonPanels') private comparisonPanels?: ElementRef<HTMLElement>;
   recipeDisplays: RecipeDisplay[] = [];
+  isEditingRecipeTitle = false;
+  recipeTitleDraft = '';
   pdfConfirmationDisplay: RecipeDisplay | null = null;
   isLoading = true;
   errorMessage = '';
@@ -120,6 +122,29 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
       const key = `${row.dataset['stepField']}:${row.dataset['stepIndex']}`;
       row.style.minHeight = `${Math.ceil(tallestByStep.get(key) ?? 0)}px`;
     });
+  }
+
+  startEditingRecipeTitle(): void {
+    const recipeTitle = this.recipeDisplays.find((display) => display.editable)?.recipeTitle;
+    if (recipeTitle === undefined) {
+      return;
+    }
+
+    this.recipeTitleDraft = recipeTitle;
+    this.isEditingRecipeTitle = true;
+  }
+
+  acceptRecipeTitle(): void {
+    const recipeTitle = this.recipeTitleDraft.trim();
+    if (recipeTitle) {
+      this.recipeDisplays.forEach((display) => display.recipeTitle = recipeTitle);
+    }
+    this.cancelRecipeTitleEditing();
+  }
+
+  cancelRecipeTitleEditing(): void {
+    this.isEditingRecipeTitle = false;
+    this.recipeTitleDraft = '';
   }
 
   addStep(display: RecipeDisplay, field: 'ingredients' | 'directions'): void {
