@@ -40,6 +40,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     originalIndex: number;
     currentIndex: number;
   } | null = null;
+  private pendingStepScroll: { field: 'ingredients' | 'directions'; index: number } | null = null;
   private stepRowLayoutSignature = '';
   private undoToastTimeout: number | null = null;
   private editActionsFlashTimeout: number | null = null;
@@ -80,6 +81,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     this.syncStepRowHeights();
+    this.scrollPendingStepIntoView();
   }
 
   @HostListener('window:resize')
@@ -124,6 +126,31 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     });
   }
 
+  private scrollPendingStepIntoView(): void {
+    const container = this.comparisonPanels?.nativeElement;
+    const pendingStep = this.pendingStepScroll;
+    if (!container || !pendingStep) {
+      return;
+    }
+
+    const row = container.querySelector<HTMLElement>(
+      `[data-step-field="${pendingStep.field}"][data-step-index="${pendingStep.index}"]`
+    );
+    if (!row) {
+      return;
+    }
+
+    this.pendingStepScroll = null;
+    window.setTimeout(() => {
+      if (!row.isConnected || !this.isEditing(pendingStep.field, pendingStep.index)) {
+        return;
+      }
+
+      row.querySelector<HTMLTextAreaElement>('.row-editor')?.focus({ preventScroll: true });
+      row.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    }, 0);
+  }
+
   startEditingRecipeTitle(): void {
     const recipeTitle = this.recipeDisplays.find((display) => display.editable)?.recipeTitle;
     if (recipeTitle === undefined) {
@@ -155,6 +182,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     const index = display[field].length;
     display[field].push('');
     this.startEditing(display, field, index);
+    this.pendingStepScroll = { field, index };
   }
 
   startEditing(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
@@ -479,22 +507,24 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   }
 
   acceptEditing(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
-    if (this.isEditing(field, index)) {
-      const previousValue = display[field][index];
-      const updatedValue = this.editingDraft;
-      display[field][index] = updatedValue;
+    if (!this.isEditing(field, index)) {
+      return;
+    }
 
-      if (previousValue !== updatedValue) {
-        this.pendingStepUpdate = {
-          display,
-          field,
-          index,
-          hadPreviousValue: true,
-          previousValue,
-          updatedValue
-        };
-        this.scheduleUndoToastDismissal();
-      }
+    const previousValue = display[field][index];
+    const updatedValue = this.editingDraft;
+    display[field][index] = updatedValue;
+
+    if (previousValue !== updatedValue) {
+      this.pendingStepUpdate = {
+        display,
+        field,
+        index,
+        hadPreviousValue: true,
+        previousValue,
+        updatedValue
+      };
+      this.scheduleUndoToastDismissal();
     }
     this.cancelEditing();
   }

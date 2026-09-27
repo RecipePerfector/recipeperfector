@@ -3,6 +3,25 @@
   min-height: 100%;
 }
 
+:host:has(app-recipe-instruction) {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+:host:has(app-recipe-instruction) > app-auth-shell {
+  flex: 0 0 auto;
+}
+
+:host:has(app-recipe-instruction) > app-recipe-instruction {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .page-shell {
   max-width: 1120px;
   margin: 0 auto;

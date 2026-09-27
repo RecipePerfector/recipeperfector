@@ -81,27 +81,43 @@ describe('RecipeInstructionComponent', () => {
     expect(component.pendingStepUpdate).toBeNull();
   });
 
-  it('should append a new editable row from each section add button', () => {
+  it('should append and scroll to a new editable row from each section add button', fakeAsync(() => {
     const display = component.recipeDisplays.find((recipe) => recipe.editable)!;
     const compiled = fixture.nativeElement as HTMLElement;
+    const scrollIntoView = spyOn(HTMLElement.prototype, 'scrollIntoView').and.stub();
     const ingredientCount = display.ingredients.length;
     const directionCount = display.directions.length;
 
     compiled.querySelector<HTMLButtonElement>('.add-step-button[aria-label="Add ingredient"]')!.click();
     fixture.detectChanges();
+    tick(0);
+    fixture.detectChanges();
 
     expect(display.ingredients.length).toBe(ingredientCount + 1);
     expect(display.ingredients[ingredientCount]).toBe('');
     expect(component.isEditing('ingredients', ingredientCount)).toBeTrue();
+    const scrolledIngredient = scrollIntoView.calls.mostRecent().object as HTMLElement;
+    expect(scrolledIngredient.dataset['stepField']).toBe('ingredients');
+    expect(scrolledIngredient.dataset['stepIndex']).toBe(String(ingredientCount));
+    expect(scrollIntoView.calls.mostRecent().args[0]).toEqual({
+      behavior: 'smooth',
+      block: 'end',
+      inline: 'nearest'
+    });
 
     compiled.querySelector<HTMLButtonElement>('.add-step-button[aria-label="Add direction"]')!.click();
+    fixture.detectChanges();
+    tick(0);
     fixture.detectChanges();
 
     expect(display.directions.length).toBe(directionCount + 1);
     expect(display.directions[directionCount]).toBe('');
     expect(component.isEditing('directions', directionCount)).toBeTrue();
+    const scrolledDirection = scrollIntoView.calls.mostRecent().object as HTMLElement;
+    expect(scrolledDirection.dataset['stepField']).toBe('directions');
+    expect(scrolledDirection.dataset['stepIndex']).toBe(String(directionCount));
     expect(compiled.querySelectorAll('.add-step-button').length).toBe(2);
-  });
+  }));
 
   it('should blink the active edit actions when another row drag button is clicked', fakeAsync(() => {
     const display = component.recipeDisplays.find((recipe) => recipe.editable)!;
