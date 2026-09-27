@@ -2,7 +2,7 @@ import { AfterViewChecked, Component, ElementRef, HostListener, OnInit, ViewChil
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
+import { RecipePageHeadingComponent } from './recipe-page-heading/recipe-page-heading.component';
 
 interface RecipeData {
   title: string;
@@ -19,15 +19,13 @@ interface RecipeDisplay extends RecipeData {
 @Component({
   selector: 'app-recipe-instruction',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, RouterLink],
+  imports: [CommonModule, FormsModule, HttpClientModule, RecipePageHeadingComponent],
   templateUrl: './recipe-instruction.component.html',
   styleUrl: './recipe-instruction.component.css'
 })
 export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   @ViewChild('comparisonPanels') private comparisonPanels?: ElementRef<HTMLElement>;
   recipeDisplays: RecipeDisplay[] = [];
-  isEditingRecipeTitle = false;
-  recipeTitleDraft = '';
   pdfConfirmationDisplay: RecipeDisplay | null = null;
   isLoading = true;
   errorMessage = '';
@@ -151,27 +149,15 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     }, 0);
   }
 
-  startEditingRecipeTitle(): void {
-    const recipeTitle = this.recipeDisplays.find((display) => display.editable)?.recipeTitle;
-    if (recipeTitle === undefined) {
-      return;
-    }
-
-    this.recipeTitleDraft = recipeTitle;
-    this.isEditingRecipeTitle = true;
+  updateRecipeTitle(recipeTitle: string): void {
+    this.recipeDisplays.forEach((display) => display.recipeTitle = recipeTitle);
   }
 
-  acceptRecipeTitle(): void {
-    const recipeTitle = this.recipeTitleDraft.trim();
-    if (recipeTitle) {
-      this.recipeDisplays.forEach((display) => display.recipeTitle = recipeTitle);
+  requestPdfDownloadForEditableRecipe(): void {
+    const display = this.recipeDisplays.find((recipe) => recipe.editable);
+    if (display) {
+      this.requestPdfDownload(display);
     }
-    this.cancelRecipeTitleEditing();
-  }
-
-  cancelRecipeTitleEditing(): void {
-    this.isEditingRecipeTitle = false;
-    this.recipeTitleDraft = '';
   }
 
   addStep(display: RecipeDisplay, field: 'ingredients' | 'directions'): void {

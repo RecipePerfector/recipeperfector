@@ -33,7 +33,10 @@ describe('RecipeInstructionComponent', () => {
     fixture.detectChanges();
 
     expect(compiled.querySelector('.recipe-title-input')).not.toBeNull();
-    component.recipeTitleDraft = 'Sunday Supper';
+    const titleInput = compiled.querySelector<HTMLInputElement>('.recipe-title-input')!;
+    titleInput.value = 'Sunday Supper';
+    titleInput.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
     compiled.querySelector<HTMLButtonElement>('.save-title-action')!.click();
     fixture.detectChanges();
 
