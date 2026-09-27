@@ -39,6 +39,15 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     currentIndex: number;
   } | null = null;
   private stepRowLayoutSignature = '';
+  private undoToastTimeout: number | null = null;
+  pendingStepUpdate: {
+    display: RecipeDisplay;
+    field: 'ingredients' | 'directions';
+    index: number;
+    hadPreviousValue: boolean;
+    previousValue: string | undefined;
+    updatedValue: string;
+  } | null = null;
   editingDraft = '';
   comparisonSelections = new Set<string>();
   hoveredComparison: { title: string; field: 'ingredients' | 'directions'; index: number } | null = null;
@@ -109,6 +118,16 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
       const key = `${row.dataset['stepField']}:${row.dataset['stepIndex']}`;
       row.style.minHeight = `${Math.ceil(tallestByStep.get(key) ?? 0)}px`;
     });
+  }
+
+  addStep(display: RecipeDisplay, field: 'ingredients' | 'directions'): void {
+    if (!display.editable) {
+      return;
+    }
+
+    const index = display[field].length;
+    display[field].push('');
+    this.startEditing(display, field, index);
   }
 
   startEditing(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
@@ -291,8 +310,29 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
 
   triggerComparisonFlash(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
     const yours = this.recipeDisplays.find((recipe) => recipe.title === 'Yours (Editable)');
+    let yoursIndex = index;
     if (yours && display.title !== 'Yours (Editable)') {
-      yours[field][index] = display[field][index];
+      const steps = yours[field];
+      const updatedValue = display[field][index];
+      const hadPreviousValue = index < steps.length;
+      const previousValue = steps[index];
+
+      if (hadPreviousValue) {
+        steps[index] = updatedValue;
+      } else {
+        yoursIndex = steps.length;
+        steps.push(updatedValue);
+      }
+
+      this.pendingStepUpdate = {
+        display: yours,
+        field,
+        index: yoursIndex,
+        hadPreviousValue,
+        previousValue,
+        updatedValue
+      };
+      this.scheduleUndoToastDismissal();
     }
 
     this.flashComparison = {
@@ -306,7 +346,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
       this.flashComparison = {
         title: 'Yours (Editable)',
         field,
-        index,
+        index: yoursIndex,
         variant: 'green'
       };
       window.setTimeout(() => {
@@ -320,6 +360,38 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     }, 1800);
   }
 
+  undoStepUpdate(): void {
+    const update = this.pendingStepUpdate;
+    if (!update) {
+      return;
+    }
+
+    const steps = update.display[update.field];
+    if (update.hadPreviousValue && steps[update.index] === update.updatedValue) {
+      steps[update.index] = update.previousValue ?? '';
+    } else if (!update.hadPreviousValue && steps[update.index] === update.updatedValue) {
+      steps.splice(update.index, 1);
+    }
+
+    this.dismissUndoToast();
+  }
+
+  private scheduleUndoToastDismissal(): void {
+    if (this.undoToastTimeout !== null) {
+      window.clearTimeout(this.undoToastTimeout);
+    }
+
+    this.undoToastTimeout = window.setTimeout(() => this.dismissUndoToast(), 5000);
+  }
+
+  private dismissUndoToast(): void {
+    this.pendingStepUpdate = null;
+    if (this.undoToastTimeout !== null) {
+      window.clearTimeout(this.undoToastTimeout);
+      this.undoToastTimeout = null;
+    }
+  }
+
   toggleComparisonSelection(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
     this.triggerComparisonFlash(display, field, index);
     this.comparisonSelections.delete(`${display.title}-${field}-${index}`);
@@ -327,7 +399,21 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
 
   acceptEditing(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
     if (this.isEditing(field, index)) {
-      display[field][index] = this.editingDraft;
+      const previousValue = display[field][index];
+      const updatedValue = this.editingDraft;
+      display[field][index] = updatedValue;
+
+      if (previousValue !== updatedValue) {
+        this.pendingStepUpdate = {
+          display,
+          field,
+          index,
+          hadPreviousValue: true,
+          previousValue,
+          updatedValue
+        };
+        this.scheduleUndoToastDismissal();
+      }
     }
     this.cancelEditing();
   }

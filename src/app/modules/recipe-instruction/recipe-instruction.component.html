@@ -33,7 +33,22 @@
             </header>
 
             <section class="recipe-section">
-              <h2>Ingredients</h2>
+              <div class="section-heading">
+                <h2>Ingredients</h2>
+                @if (display.editable) {
+                  <button
+                    class="add-step-button"
+                    type="button"
+                    aria-label="Add ingredient"
+                    title="Add ingredient"
+                    (click)="addStep(display, 'ingredients')"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </button>
+                }
+              </div>
               <ol class="numbered-list">
                 @for (ingredient of display.ingredients; track $index) {
                   <li
@@ -172,7 +187,22 @@
             </section>
 
             <section class="recipe-section">
-              <h2>Directions</h2>
+              <div class="section-heading">
+                <h2>Directions</h2>
+                @if (display.editable) {
+                  <button
+                    class="add-step-button"
+                    type="button"
+                    aria-label="Add direction"
+                    title="Add direction"
+                    (click)="addStep(display, 'directions')"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </button>
+                }
+              </div>
               <ol class="numbered-list">
                 @for (direction of display.directions; track $index) {
                   <li
@@ -314,6 +344,14 @@
       </div>
     } @else {
       <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (pendingStepUpdate) {
+      <div class="step-update-toast" role="status">
+        <button class="undo-step-update-button" type="button" (click)="undoStepUpdate()">
+          Undo Step Update?
+        </button>
+      </div>
     }
 
     @if (pdfConfirmationDisplay) {

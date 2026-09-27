@@ -100,6 +100,43 @@
   font-size: 1rem;
 }
 
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.add-step-button {
+  display: grid;
+  flex: 0 0 2rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.35rem;
+  place-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  color: #7c2d12;
+  cursor: pointer;
+}
+
+.add-step-button:hover,
+.add-step-button:focus-visible {
+  border-color: #fdba74;
+  background: #fff7ed;
+  outline: none;
+}
+
+.add-step-button svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
 .numbered-list {
   display: grid;
   gap: 0.65rem;
@@ -409,8 +446,8 @@
   cursor: pointer;
 }
 
-.editable .numbered-list li:hover,
-.editable .numbered-list li:focus-within {
+.editable .numbered-list li:hover:not(.is-editing),
+.editable .numbered-list li:focus-within:not(.is-editing) {
   padding-right: 4.5rem;
 }
 
@@ -436,8 +473,13 @@
 }
 
 .editable .numbered-list li:hover .delete-step-button,
-.editable .numbered-list li:focus-within .delete-step-button,
 .editable .numbered-list li .delete-step-button:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.editable .numbered-list li:hover .move-step-button,
+.editable .numbered-list li .move-step-button:focus-visible {
   opacity: 1;
   pointer-events: auto;
 }
@@ -446,13 +488,6 @@
 .editable .numbered-list li.is-dragging-step .delete-step-button {
   opacity: 0;
   pointer-events: none;
-}
-
-.editable .numbered-list li:hover .move-step-button,
-.editable .numbered-list li:focus-within .move-step-button,
-.editable .numbered-list li .move-step-button:focus-visible {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .editable .numbered-list li .edit-icon {
@@ -512,4 +547,43 @@
 .loading, .error {
   color: #6b7280;
   font-size: 1rem;
+}
+
+.step-update-toast {
+  position: fixed;
+  z-index: 5;
+  right: 1.25rem;
+  bottom: 1.25rem;
+}
+
+.undo-step-update-button {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  background: #166534;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.18);
+}
+
+.undo-step-update-button:hover,
+.undo-step-update-button:focus-visible {
+  background: #14532d;
+  outline: 2px solid #86efac;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .step-update-toast {
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+  }
+
+  .undo-step-update-button {
+    width: 100%;
+  }
 }
