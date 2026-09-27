@@ -41,6 +41,28 @@ describe('RecipeInstructionComponent', () => {
     expect(component.recipeDisplays.every((display) => display.recipeTitle === 'Sunday Supper')).toBeTrue();
   });
 
+  it('should place the black PDF download icon on the right side of the title row', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const pdfButton = compiled.querySelector<HTMLButtonElement>('.recipe-page-heading .recipe-page-pdf-button')!;
+    const saveButton = compiled.querySelector<HTMLButtonElement>('.recipe-page-save-button')!;
+
+    expect(compiled.querySelector('.instruction-header .pdf-button')).toBeNull();
+    expect(saveButton.title).toBe('Save to Recipe Perfector');
+    expect(saveButton.getAttribute('aria-label')).toBe('Save to Recipe Perfector');
+    expect(getComputedStyle(saveButton).cursor).toBe('pointer');
+    saveButton.click();
+    fixture.detectChanges();
+    expect(component.pdfConfirmationDisplay).toBeNull();
+
+    expect(getComputedStyle(pdfButton).color).toBe('rgb(0, 0, 0)');
+    expect(getComputedStyle(pdfButton).backgroundColor).toBe('rgb(255, 237, 213)');
+    pdfButton.click();
+    fixture.detectChanges();
+
+    expect(component.pdfConfirmationDisplay?.title).toBe('Yours (Editable)');
+    expect(compiled.querySelector('.pdf-confirmation-modal')).not.toBeNull();
+  });
+
   it('should show an undo toast after accepting an edited step', () => {
     const display = component.recipeDisplays.find((recipe) => recipe.editable)!;
     const previousValue = display.ingredients[0];

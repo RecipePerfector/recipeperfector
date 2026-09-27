@@ -56,7 +56,37 @@
         } @else {
           <span class="recipe-page-heading-spacer" aria-hidden="true"></span>
         }
-        <span class="recipe-page-heading-spacer" aria-hidden="true"></span>
+        @if (recipeDisplays.length > 0) {
+          <div class="recipe-page-actions">
+            <button
+              class="pdf-button recipe-page-pdf-button"
+              type="button"
+              aria-label="Download Yours recipe as PDF"
+              title="Download as PDF"
+              (click)="requestPdfDownload(recipeDisplays[0])"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M6 2h8l5 5v15H6z" />
+                <path d="M14 2v6h6" />
+                <text x="7" y="17" font-size="5">PDF</text>
+              </svg>
+            </button>
+            <button
+              class="recipe-page-save-button"
+              type="button"
+              aria-label="Save to Recipe Perfector"
+              title="Save to Recipe Perfector"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M5 3h12l4 4v14H3V5a2 2 0 0 1 2-2Z" />
+                <path d="M7 3v6h10V3" />
+                <path d="M7 21v-8h10v8" />
+              </svg>
+            </button>
+          </div>
+        } @else {
+          <span class="recipe-page-heading-spacer" aria-hidden="true"></span>
+        }
       </div>
 
     @if (recipeDisplays.length > 0) {
@@ -70,23 +100,7 @@
             <header class="instruction-header">
               <span aria-hidden="true"></span>
               <p class="eyebrow">{{ display.title }}</p>
-              @if (display.editable) {
-                <button
-                  class="pdf-button"
-                  type="button"
-                  aria-label="Download Yours recipe as PDF"
-                  title="Download as PDF"
-                  (click)="requestPdfDownload(display)"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M6 2h8l5 5v15H6z" />
-                    <path d="M14 2v6h6" />
-                    <text x="7" y="17" font-size="5">PDF</text>
-                  </svg>
-                </button>
-              } @else {
-                <span aria-hidden="true"></span>
-              }
+              <span aria-hidden="true"></span>
             </header>
 
             <section class="recipe-section">
