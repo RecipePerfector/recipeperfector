@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RecipePageHeadingComponent } from './recipe-page-heading/recipe-page-heading.component';
 import { RecipeDisplay, RecipeField, RecipeRowComponent } from './recipe-row/recipe-row.component';
+import { RecipeService } from '../../services/recipe/recipe.service';
 
 interface RecipeData {
   title: string;
@@ -51,7 +52,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   hoveredComparison: { title: string; field: 'ingredients' | 'directions'; index: number } | null = null;
   flashComparison: { title: string; field: 'ingredients' | 'directions'; index: number; variant: 'green' | 'red' } | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private recipeService: RecipeService) {}
 
   ngOnInit(): void {
     this.http.get<RecipeData>('assets/example-recipe.json').subscribe({
@@ -153,6 +154,15 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     if (display) {
       this.requestPdfDownload(display);
     }
+  }
+
+  async saveEditableRecipe(): Promise<void> {
+    const display = this.recipeDisplays.find((recipe) => recipe.editable);
+    if (!display) {
+      return;
+    }
+
+    await this.recipeService.saveRecipe(display);
   }
 
   addStep(display: RecipeDisplay, field: RecipeField): void {

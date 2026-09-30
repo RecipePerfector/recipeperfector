@@ -13,6 +13,7 @@ export class RecipePageHeadingComponent {
   @Input() recipeTitle: string | null = null;
   @Output() recipeTitleChange = new EventEmitter<string>();
   @Output() pdfRequested = new EventEmitter<void>();
+  @Output() saveRequested = new EventEmitter<void>();
 
   isEditingRecipeTitle = false;
   recipeTitleDraft = '';
@@ -41,5 +42,9 @@ export class RecipePageHeadingComponent {
 
   requestPdf(): void {
     this.pdfRequested.emit();
+  }
+
+  saveRecipe(): void {
+    this.saveRequested.emit();
   }
 }

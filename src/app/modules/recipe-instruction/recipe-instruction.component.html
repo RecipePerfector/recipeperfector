@@ -4,6 +4,7 @@
       [recipeTitle]="recipeDisplays.length > 0 ? recipeDisplays[0].recipeTitle : null"
       (recipeTitleChange)="updateRecipeTitle($event)"
       (pdfRequested)="requestPdfDownloadForEditableRecipe()"
+      (saveRequested)="saveEditableRecipe()"
     />
 
     @if (recipeDisplays.length > 0) {
