@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RecipeButtonComponent } from '../recipe-button/recipe-button.component';
@@ -15,6 +15,9 @@ import { UserService } from '../../services/user/user.service';
 export class AuthShellComponent {
   private userService = inject(UserService);
 
+  @ViewChild('accountMenuContainer', { read: ElementRef })
+  private accountMenuContainer?: ElementRef<HTMLElement>;
+
   isLoginDialogOpen = false;
   username = '';
   password = '';
@@ -29,12 +32,28 @@ export class AuthShellComponent {
     return this.userService.isUserLoggedIn();
   }
 
+  get accountLabel(): string {
+    return this.userService.getUsername() ?? 'Account';
+  }
+
   openLoginDialog(): void {
     this.isLoginDialogOpen = true;
   }
 
   toggleAccountMenu(): void {
     this.isAccountMenuOpen = !this.isAccountMenuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeAccountMenuOnOutsideClick(event: MouseEvent): void {
+    if (!this.isAccountMenuOpen || !this.accountMenuContainer) {
+      return;
+    }
+
+    const target = event.target;
+    if (target instanceof Node && !this.accountMenuContainer.nativeElement.contains(target)) {
+      this.isAccountMenuOpen = false;
+    }
   }
 
   logout(): void {

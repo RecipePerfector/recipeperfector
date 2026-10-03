@@ -12,15 +12,6 @@
   z-index: 100;
 }
 
-.account-username {
-  margin: 0;
-  padding: 0.45rem 0.7rem 0.6rem;
-  color: #111827;
-  font-size: 0.9rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
 .account-menu button {
   width: 100%;
   padding: 0.6rem 0.7rem;

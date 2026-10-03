@@ -7,6 +7,7 @@ describe('AuthShellComponent', () => {
   let fixture: ComponentFixture<AuthShellComponent>;
   let userService: {
     isUserLoggedIn: jasmine.Spy;
+    getUsername: jasmine.Spy;
     logout: jasmine.Spy;
     createNewUser: jasmine.Spy;
   };
@@ -14,6 +15,7 @@ describe('AuthShellComponent', () => {
   beforeEach(async () => {
     userService = {
       isUserLoggedIn: jasmine.createSpy('isUserLoggedIn').and.returnValue(false),
+      getUsername: jasmine.createSpy('getUsername').and.returnValue('test@example.com'),
       logout: jasmine.createSpy('logout'),
       createNewUser: jasmine.createSpy('createNewUser').and.resolveTo({})
     };
@@ -50,9 +52,26 @@ describe('AuthShellComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.account-menu')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('.user-label').textContent).toContain('test@example.com');
+    expect(fixture.nativeElement.querySelector('.account-username')).toBeFalsy();
 
     fixture.nativeElement.querySelector('.account-menu button').click();
     expect(userService.logout).toHaveBeenCalled();
     expect(component.isAccountMenuOpen).toBeFalse();
+  });
+
+  it('closes the account menu when clicking outside of it', () => {
+    userService.isUserLoggedIn.and.returnValue(true);
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('.user-menu').click();
+    fixture.detectChanges();
+    expect(component.isAccountMenuOpen).toBeTrue();
+
+    document.body.click();
+    fixture.detectChanges();
+
+    expect(component.isAccountMenuOpen).toBeFalse();
+    expect(fixture.nativeElement.querySelector('.account-menu')).toBeFalsy();
   });
 });

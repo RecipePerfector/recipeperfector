@@ -158,11 +158,13 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
 
   async saveEditableRecipe(): Promise<void> {
     const display = this.recipeDisplays.find((recipe) => recipe.editable);
-    if (!display) {
+    const originalPanel = this.recipeDisplays.find((recipe) => recipe.title === 'Original');
+    const crowdSourcePanel = this.recipeDisplays.find((recipe) => recipe.title === 'Crowd Sourced');
+    if (!display || !originalPanel || !crowdSourcePanel) {
       return;
     }
 
-    await this.recipeService.saveRecipe(display);
+    await this.recipeService.saveRecipe(display, originalPanel, crowdSourcePanel);
   }
 
   addStep(display: RecipeDisplay, field: RecipeField): void {

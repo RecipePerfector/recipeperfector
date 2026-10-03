@@ -9,11 +9,12 @@ export class ApiService {
   //apiURL: string = 'https://fantasyautoadder-backend-1.onrender.com';
   constructor(private http: HttpClient) { }
 
-  async callAPIPost(endpoint: string, keyMap?: any) {
+  async callAPIPost(endpoint: string, keyMap?: any, token?: string) {
     const response = await fetch(`${this.apiURL}${endpoint}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
       },
       body: JSON.stringify(keyMap ?? {})
     });
