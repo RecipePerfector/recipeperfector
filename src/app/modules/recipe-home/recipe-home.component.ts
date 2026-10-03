@@ -1,44 +1,26 @@
-import { Component } from '@angular/core';
-import { RecipeCardComponent } from '../recipe-card/recipe-card.component';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { RecipeButtonComponent } from '../../shared/recipe-button/recipe-button.component';
+import { ApiService } from '../../services/api/api.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-recipe-home',
   standalone: true,
-  imports: [RecipeCardComponent],
+  imports: [RecipeButtonComponent],
   templateUrl: './recipe-home.component.html',
   styleUrl: './recipe-home.component.css'
 })
 export class RecipeHomeComponent {
-  title = 'Recipe Perfector';
+  private router = inject(Router);
+  private api = inject(ApiService);
+  private userService = inject(UserService);
 
-  recipes = [
-    {
-      name: 'Crispy Avocado Tacos',
-      time: '20 min',
-      tag: 'Quick Bite',
-      emoji: '🌮',
-      description: 'Crunchy tortillas filled with smoky avocado and fresh herbs.'
-    },
-    {
-      name: 'Golden Herb Pasta',
-      time: '25 min',
-      tag: 'Comfort Food',
-      emoji: '🍝',
-      description: 'Velvety pasta tossed with roasted garlic and bright herbs.'
-    },
-    {
-      name: 'Berry Parfait Bowl',
-      time: '10 min',
-      tag: 'Breakfast',
-      emoji: '🫐',
-      description: 'Layered yogurt, granola, and sweet berries for a quick start.'
-    },
-    {
-      name: 'Maple Roasted Salmon',
-      time: '30 min',
-      tag: 'Dinner',
-      emoji: '🐟',
-      description: 'Tender salmon glazed with maple and citrus for a glossy finish.'
-    }
-  ];
+  openExampleRecipe(): void {
+    this.router.navigate(['/recipe']);
+    this.api.callAPIGet('/api/users/me', this.userService.getAuthToken() ?? undefined).then((response: any) => {
+      console.log('me response: ');
+      console.log(response);
+    });
+  }
 }

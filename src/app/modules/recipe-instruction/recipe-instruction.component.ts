@@ -6,6 +6,8 @@ import { RecipeDisplay, RecipeField, RecipeRowComponent } from './recipe-row/rec
 import { RecipeService } from '../../services/recipe/recipe.service';
 import { RecipePdfService } from '../../services/recipe/recipe-pdf.service';
 import { RecipeData } from '../../models/recipe-display.model';
+import { AuthDialogService } from '../../services/auth-dialog/auth-dialog.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-recipe-instruction',
@@ -51,7 +53,9 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   constructor(
     private http: HttpClient,
     private recipeService: RecipeService,
-    private recipePdfService: RecipePdfService
+    private recipePdfService: RecipePdfService,
+    private userService: UserService,
+    private authDialog: AuthDialogService
   ) {}
 
   ngOnInit(): void {
@@ -157,6 +161,12 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   }
 
   async saveEditableRecipe(): Promise<void> {
+    // The page is public, but saving needs an account: prompt for login instead.
+    if (!this.userService.isUserLoggedIn()) {
+      this.authDialog.requestLogin('You need to be logged in before saving a recipe.');
+      return;
+    }
+
     const display = this.recipeDisplays.find((recipe) => recipe.editable);
     const originalPanel = this.recipeDisplays.find((recipe) => recipe.title === 'Original');
     const crowdSourcePanel = this.recipeDisplays.find((recipe) => recipe.title === 'Crowd Sourced');

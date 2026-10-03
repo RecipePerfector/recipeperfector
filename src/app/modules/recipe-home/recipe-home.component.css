@@ -6,11 +6,12 @@
 .page-shell {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 2.5rem 1.25rem 3rem;
+  padding: clamp(3rem, 10vw, 7rem) 1.25rem 4rem;
 }
 
 .hero {
-  margin-bottom: 1.75rem;
+  max-width: 44rem;
+  margin-bottom: 2.5rem;
 }
 
 .eyebrow {
@@ -18,25 +19,91 @@
   letter-spacing: 0.28em;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #ff6b6b;
+  color: #c2410c;
   margin-bottom: 0.5rem;
 }
 
 .hero h1 {
   margin: 0 0 0.5rem;
-  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 1.08;
   color: #1f2937;
 }
 
 .hero-copy {
-  max-width: 640px;
+  max-width: 40rem;
   color: #6b7280;
-  font-size: 1rem;
+  font-size: 1.15rem;
   line-height: 1.6;
 }
 
-.recipe-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
+.access-panel,
+.example-panel,
+.contact-panel {
+  max-width: 42rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  line-height: 1.65;
+}
+
+.access-panel {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+
+.contact-panel {
+  margin-top: 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.example-panel {
+  margin-top: 1rem;
+  background: #fff;
+  border: 1px solid #fed7aa;
+}
+
+.example-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.example-panel .example-header h2 {
+  margin: 0;
+}
+
+.access-panel h2,
+.example-panel h2,
+.contact-panel h2 {
+  margin: 0 0 0.65rem;
+  color: #1f2937;
+  font-size: 1.25rem;
+}
+
+.access-panel p,
+.example-panel p,
+.contact-panel p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.access-panel p + p {
+  margin-top: 0.9rem;
+}
+
+a {
+  color: #c2410c;
+  font-weight: 600;
+}
+
+@media (min-width: 48rem) {
+  .access-panel,
+  .example-panel,
+  .contact-panel {
+    padding: 2rem;
+  }
 }

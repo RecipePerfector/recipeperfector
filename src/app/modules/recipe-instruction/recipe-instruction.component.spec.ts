@@ -4,6 +4,9 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 
 import { RecipeInstructionComponent } from './recipe-instruction.component';
+import { AuthDialogService } from '../../services/auth-dialog/auth-dialog.service';
+import { RecipeService } from '../../services/recipe/recipe.service';
+import { UserService } from '../../services/user/user.service';
 
 describe('RecipeInstructionComponent', () => {
   let component: RecipeInstructionComponent;
@@ -176,6 +179,22 @@ describe('RecipeInstructionComponent', () => {
     fixture.detectChanges();
     expect(compiled.querySelector('.edit-actions.blink-edit-actions')).toBeNull();
   }));
+
+  it('should prompt for login instead of saving when the user is not logged in', async () => {
+    const userService = TestBed.inject(UserService);
+    const authDialog = TestBed.inject(AuthDialogService);
+    const saveRecipe = spyOn(TestBed.inject(RecipeService), 'saveRecipe').and.resolveTo({});
+    const requestLogin = spyOn(authDialog, 'requestLogin');
+
+    spyOn(userService, 'isUserLoggedIn').and.returnValue(false);
+    await component.saveEditableRecipe();
+    expect(requestLogin).toHaveBeenCalledWith('You need to be logged in before saving a recipe.');
+    expect(saveRecipe).not.toHaveBeenCalled();
+
+    (userService.isUserLoggedIn as jasmine.Spy).and.returnValue(true);
+    await component.saveEditableRecipe();
+    expect(saveRecipe).toHaveBeenCalledTimes(1);
+  });
 
   it('should reveal the Delete and Drag buttons when an editable row is hovered', () => {
     const compiled = fixture.nativeElement as HTMLElement;

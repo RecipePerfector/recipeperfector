@@ -1,10 +1,12 @@
-import { Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RecipeButtonComponent } from '../recipe-button/recipe-button.component';
 import { AccountMenuComponent } from '../account-menu/account-menu.component';
 import { UserService } from '../../services/user/user.service';
+import { AuthDialogService } from '../../services/auth-dialog/auth-dialog.service';
 
 @Component({
   selector: 'app-auth-shell',
@@ -16,6 +18,8 @@ import { UserService } from '../../services/user/user.service';
 export class AuthShellComponent {
   private userService = inject(UserService);
   private router = inject(Router);
+  private authDialog = inject(AuthDialogService);
+  private destroyRef = inject(DestroyRef);
 
   @ViewChild('accountMenuContainer', { read: ElementRef })
   private accountMenuContainer?: ElementRef<HTMLElement>;
@@ -29,6 +33,17 @@ export class AuthShellComponent {
   isCreatingAccount = false;
   userImageUrl = '';
   isAccountMenuOpen = false;
+  /** Explains why the dialog was opened (e.g. a page that requires login). */
+  loginPromptText = '';
+
+  constructor() {
+    this.authDialog.loginRequested$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((message) => {
+        this.openLoginDialog();
+        this.loginPromptText = message ?? '';
+      });
+  }
 
   get isLoggedIn(): boolean {
     return this.userService.isUserLoggedIn();
@@ -72,6 +87,7 @@ export class AuthShellComponent {
     this.accountMode = 'existing';
     this.usePasswordless = false;
     this.confirmationText = '';
+    this.loginPromptText = '';
     this.isCreatingAccount = false;
   }
 

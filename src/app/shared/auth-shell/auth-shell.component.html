@@ -30,6 +30,10 @@
           <app-recipe-button btnClass="primary-btn" type="button" (pressed)="closeLoginDialog()">Close</app-recipe-button>
         </div>
       } @else {
+        @if (loginPromptText) {
+          <p class="login-prompt" role="alert">{{ loginPromptText }}</p>
+        }
+
         <div class="login-mode-group" role="radiogroup" aria-label="Choose account mode">
           <label class="login-toggle">
             <input type="radio" [value]="'create'" [(ngModel)]="accountMode" name="accountMode" />

@@ -1,7 +1,46 @@
-<div class="page-shell">
-  <main class="recipe-grid">
-    @for (recipe of recipes; track recipe.name) {
-      <app-recipe-card [recipe]="recipe"></app-recipe-card>
-    }
-  </main>
-</div>
+<main class="page-shell landing-page">
+  <section class="hero" aria-labelledby="welcome-heading">
+    <p class="eyebrow">Welcome to Recipe Perfector</p>
+    <h1 id="welcome-heading">A place to make recipes even better.</h1>
+    <p class="hero-copy">
+      Recipe Perfector is a recipe collaboration project where recipes can be
+      compared, refined, and saved in one place.
+    </p>
+  </section>
+
+  <section class="access-panel" aria-labelledby="access-heading">
+    <h2 id="access-heading">About this website</h2>
+    <p>
+      This website is part of my professional work resume. Keeping it
+      available as a private project helps me demonstrate the application
+      without the cost of opening a full public service to everyone.
+    </p>
+    <p>
+      If I gave you a code to try the website, create an account using the
+      Login button above and then enter the code from the Account menu.
+    </p>
+  </section>
+
+  <section class="example-panel" aria-labelledby="example-heading">
+    <div class="example-header">
+      <h2 id="example-heading">See an example recipe perfected</h2>
+      <app-recipe-button btnClass="primary-btn" type="button" (pressed)="openExampleRecipe()">
+        Example Recipe Creator
+      </app-recipe-button>
+    </div>
+    <p>
+      See how this website handles a real recipe from the popular recipe
+      website
+      <a href="https://www.allrecipes.com/" target="_blank" rel="noopener noreferrer">Allrecipes.com</a>.
+    </p>
+  </section>
+
+  <section class="contact-panel" aria-labelledby="contact-heading">
+    <h2 id="contact-heading">Request access</h2>
+    <p>
+      Would you like to try Recipe Perfector? Email
+      <a href="mailto:support&#64;recipeperfector.com">support&#64;recipeperfector.com</a>
+      and explain why you need access. I’ll provide a code if appropriate.
+    </p>
+  </section>
+</main>

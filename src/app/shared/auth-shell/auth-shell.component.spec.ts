@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { AuthShellComponent } from './auth-shell.component';
 import { UserService } from '../../services/user/user.service';
+import { AuthDialogService } from '../../services/auth-dialog/auth-dialog.service';
 
 describe('AuthShellComponent', () => {
   let component: AuthShellComponent;
@@ -42,6 +43,19 @@ describe('AuthShellComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.loading-spinner')).toBeTruthy();
     expect(compiled.textContent).toContain('Create an Account');
+  });
+
+  it('opens the login dialog with a message when a page requests login', () => {
+    TestBed.inject(AuthDialogService).requestLogin('You need to be logged in before saving a recipe.');
+    fixture.detectChanges();
+
+    const prompt = fixture.nativeElement.querySelector('.login-prompt');
+    expect(component.isLoginDialogOpen).toBeTrue();
+    expect(prompt.textContent).toContain('You need to be logged in before saving a recipe.');
+
+    component.closeLoginDialog();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.login-prompt')).toBeFalsy();
   });
 
   it('opens the account menu for a logged-in user and logs out', () => {
