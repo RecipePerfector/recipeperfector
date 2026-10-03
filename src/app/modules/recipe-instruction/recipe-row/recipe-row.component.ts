@@ -1,15 +1,8 @@
 import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
 import { RecipeRowEditableComponent } from './recipe-row-editable/recipe-row-editable.component';
+import { RecipeDisplay, RecipeField } from '../../../models/recipe-display.model';
 
-export type RecipeField = 'ingredients' | 'directions';
-
-export interface RecipeDisplay {
-  title: string;
-  recipeTitle: string;
-  ingredients: string[];
-  directions: string[];
-  editable: boolean;
-}
+export type { RecipeDisplay, RecipeField } from '../../../models/recipe-display.model';
 
 @Component({
   selector: 'li[app-recipe-row]',
