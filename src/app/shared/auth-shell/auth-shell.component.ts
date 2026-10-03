@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { RecipeButtonComponent } from '../recipe-button/recipe-button.component';
 import { AccountMenuComponent } from '../account-menu/account-menu.component';
 import { UserService } from '../../services/user/user.service';
@@ -14,6 +15,7 @@ import { UserService } from '../../services/user/user.service';
 })
 export class AuthShellComponent {
   private userService = inject(UserService);
+  private router = inject(Router);
 
   @ViewChild('accountMenuContainer', { read: ElementRef })
   private accountMenuContainer?: ElementRef<HTMLElement>;
@@ -59,6 +61,7 @@ export class AuthShellComponent {
   logout(): void {
     this.userService.logout();
     this.isAccountMenuOpen = false;
+    void this.router.navigate(['/']);
   }
 
   closeLoginDialog(): void {

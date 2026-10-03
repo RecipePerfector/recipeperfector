@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 import { AuthShellComponent } from './auth-shell.component';
 import { UserService } from '../../services/user/user.service';
 
@@ -25,7 +26,7 @@ describe('AuthShellComponent', () => {
       providers: [{
         provide: UserService,
         useValue: userService
-      }]
+      }, provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AuthShellComponent);
@@ -55,9 +56,11 @@ describe('AuthShellComponent', () => {
     expect(fixture.nativeElement.querySelector('.user-label').textContent).toContain('test@example.com');
     expect(fixture.nativeElement.querySelector('.account-username')).toBeFalsy();
 
+    spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
     fixture.nativeElement.querySelector('.account-menu button').click();
     expect(userService.logout).toHaveBeenCalled();
     expect(component.isAccountMenuOpen).toBeFalse();
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/']);
   });
 
   it('closes the account menu when clicking outside of it', () => {
