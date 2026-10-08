@@ -12,6 +12,9 @@ describe('AuthShellComponent', () => {
     getUsername: jasmine.Spy;
     logout: jasmine.Spy;
     createNewUser: jasmine.Spy;
+    loginUser: jasmine.Spy;
+    setUserLoggedIn: jasmine.Spy;
+    setUsername: jasmine.Spy;
   };
 
   beforeEach(async () => {
@@ -19,7 +22,10 @@ describe('AuthShellComponent', () => {
       isUserLoggedIn: jasmine.createSpy('isUserLoggedIn').and.returnValue(false),
       getUsername: jasmine.createSpy('getUsername').and.returnValue('test@example.com'),
       logout: jasmine.createSpy('logout'),
-      createNewUser: jasmine.createSpy('createNewUser').and.resolveTo({})
+      createNewUser: jasmine.createSpy('createNewUser').and.resolveTo({}),
+      loginUser: jasmine.createSpy('loginUser').and.resolveTo({ user: { username: 'test@example.com' } }),
+      setUserLoggedIn: jasmine.createSpy('setUserLoggedIn'),
+      setUsername: jasmine.createSpy('setUsername')
     };
 
     await TestBed.configureTestingModule({
@@ -38,11 +44,27 @@ describe('AuthShellComponent', () => {
   it('should show a loading spinner while creating an account', () => {
     component.accountMode = 'create';
     component.isCreatingAccount = true;
+    component.openLoginDialog();
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('.loading-spinner')).toBeTruthy();
     expect(compiled.textContent).toContain('Create an Account');
+  });
+
+  it('should show a loading spinner while signing in', async () => {
+    let resolveLogin: (response: { user: { username: string } }) => void = () => {};
+    userService.loginUser.and.returnValue(new Promise((resolve) => {
+      resolveLogin = resolve;
+    }));
+
+    component.openLoginDialog();
+    const loginPromise = component.submitLogin();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.loading-spinner')).toBeTruthy();
+    resolveLogin({ user: { username: 'test@example.com' } });
+    await loginPromise;
   });
 
   it('opens the login dialog with a message when a page requests login', () => {

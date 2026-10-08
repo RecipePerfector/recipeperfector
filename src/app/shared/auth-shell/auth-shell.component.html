@@ -64,7 +64,7 @@
 
         <div class="login-actions">
           <app-recipe-button btnClass="secondary-btn" (pressed)="closeLoginDialog()">Cancel</app-recipe-button>
-          <app-recipe-button btnClass="primary-btn" (pressed)="submitLogin()" [isButtonLoading] = isCreatingAccount>
+          <app-recipe-button btnClass="primary-btn" (pressed)="submitLogin()" [isButtonLoading]="isCreatingAccount || isSigningIn">
             {{ accountMode === 'create' ? 'Create an Account' : usePasswordless ? 'Send e-mail code' : 'Sign in' }}
           </app-recipe-button>
         </div>

@@ -31,6 +31,7 @@ export class AuthShellComponent {
   usePasswordless = false;
   confirmationText = '';
   isCreatingAccount = false;
+  isSigningIn = false;
   userImageUrl = '';
   isAccountMenuOpen = false;
   /** Explains why the dialog was opened (e.g. a page that requires login). */
@@ -89,6 +90,7 @@ export class AuthShellComponent {
     this.confirmationText = '';
     this.loginPromptText = '';
     this.isCreatingAccount = false;
+    this.isSigningIn = false;
   }
 
   async submitLogin(): Promise<void> {
@@ -115,13 +117,18 @@ export class AuthShellComponent {
       }
     } else if (this.accountMode === 'existing') {
       //Logging in with existing account
-      const response = await this.userService.loginUser(this.username, this.password);
-      if (response?.error) {
-        this.confirmationText = response?.error;
-      } else {
-        this.userService.setUserLoggedIn(true);
-        this.userService.setUsername(response?.user.username);
-        this.closeLoginDialog();
+      this.isSigningIn = true;
+      try {
+        const response = await this.userService.loginUser(this.username, this.password);
+        if (response?.error) {
+          this.confirmationText = response?.error;
+        } else {
+          this.userService.setUserLoggedIn(true);
+          this.userService.setUsername(response?.user.username);
+          this.closeLoginDialog();
+        }
+      } finally {
+        this.isSigningIn = false;
       }
     }
   }
