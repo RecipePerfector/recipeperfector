@@ -32,10 +32,12 @@ export class AppComponent {
         this.authShell?.closeLoginDialog();
         this.authShell?.openLoginDialog();
         this.authShell.confirmationText = 'Your account has been created. You have been logged into your account.';
+        this.authShell.dialogTitle = 'Confirm Email';
       } else if(response.error === 'Email already confirmed') {
         this.authShell?.closeLoginDialog();
         this.authShell?.openLoginDialog();
         this.authShell.confirmationText = 'Your email has already been confirmed. You may login to your account.';
+        this.authShell.dialogTitle = 'Confirm Email';
       }
     }
   }

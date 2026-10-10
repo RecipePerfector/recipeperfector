@@ -30,6 +30,7 @@ export class AuthShellComponent {
   accountMode: 'create' | 'existing' = 'existing';
   usePasswordless = false;
   confirmationText = '';
+  dialogTitle = 'Sign in';
   isCreatingAccount = false;
   isSigningIn = false;
   userImageUrl = '';
@@ -94,14 +95,6 @@ export class AuthShellComponent {
   }
 
   async submitLogin(): Promise<void> {
-    if (this.usePasswordless) {
-      if (this.username.trim()) {
-        this.userService.setUserLoggedIn(true);
-      }
-      this.confirmationText = 'We have sent you an email. Open it and click the Login image to finish logging in.';
-      return;
-    }
-
     //Creating an account?
     if (this.accountMode === 'create') {
       this.isCreatingAccount = true;
@@ -109,18 +102,27 @@ export class AuthShellComponent {
         const response = await this.userService.createNewUser(this.username, this.password);
         if (response?.error && response.error === 'Email already in use') {
           this.confirmationText = 'This email is already registered. Please log in or use a different email.';
+          this.dialogTitle = 'Cannot Create Account';
         } else {
           this.confirmationText = 'We have sent you an email. Open it and click the Confirm Email image to activate your account.';
+          this.dialogTitle = 'Action Required';
         }
       } finally {
         this.isCreatingAccount = false;
       }
     } else if (this.accountMode === 'existing') {
+       if (this.usePasswordless) {
+        //TODO: Implement sending the email
+        this.confirmationText = 'We have sent you an email if that email has an account.';
+        this.dialogTitle = 'Action Required';
+        return;
+      }
       //Logging in with existing account
       this.isSigningIn = true;
       try {
         const response = await this.userService.loginUser(this.username, this.password);
         if (response?.error) {
+          this.dialogTitle = "An Error Occurred";
           this.confirmationText = response?.error;
         } else {
           this.userService.setUserLoggedIn(true);
