@@ -39,12 +39,14 @@
                 }
               </div>
               <ol class="numbered-list">
-                @for (step of display.ingredients; track $index) {
+                @for (step of getDisplayedSteps(display, 'ingredients'); track $index) {
                   <li
                     app-recipe-row
                     [display]="display"
                     field="ingredients"
                     [index]="$index"
+                    [editableRowCount]="getEditableStepsLength('ingredients')"
+                    [stepValueOverride]="display.editable ? step : null"
                     [isEditing]="isEditing('ingredients', $index)"
                     [editingDraft]="editingDraft"
                     [canDragSteps]="canDragSteps()"
@@ -57,6 +59,7 @@
                     [comparisonFlashRed]="isComparisonFlash(display, 'ingredients', $index, 'red')"
                     [isFlashingEditActions]="isFlashingEditActions('ingredients', $index)"
                     [isReordering]="isDraggingDisplay(display)"
+                    [comparisonInsertPreview]="isComparisonInsertPreview(display, 'ingredients', $index)"
                     (editingDraftChange)="editingDraft = $event"
                     (editRequested)="startEditing(display, 'ingredients', $index)"
                     (deleteRequested)="handleDeleteStepClick($event, display, 'ingredients', $index)"
@@ -66,7 +69,10 @@
                     (dragOverRequested)="allowStepDrop($event, display, 'ingredients', $index)"
                     (dropRequested)="dropStep($event, display, 'ingredients')"
                     (dragEndRequested)="endStepDrag($event)"
-                    (comparisonSelectionRequested)="toggleComparisonSelection(display, 'ingredients', $index)"
+                    (comparisonSelectionRequested)="toggleComparisonSelection(display, 'ingredients', $index, $event)"
+                    (comparisonTargetRowChanged)="setHoveredComparisonTarget(display, 'ingredients', $event)"
+                    (comparisonDialogModeChanged)="setComparisonDialogMode($event)"
+                    (comparisonDialogOpenChange)="setComparisonDialogOpen($event)"
                     (hoverChanged)="setHoveredComparison(display, 'ingredients', $index, $event)"
                     (acceptRequested)="acceptEditing(display, 'ingredients', $index)"
                     (cancelRequested)="cancelEditing()"
@@ -93,12 +99,14 @@
                 }
               </div>
               <ol class="numbered-list">
-                @for (step of display.directions; track $index) {
+                @for (step of getDisplayedSteps(display, 'directions'); track $index) {
                   <li
                     app-recipe-row
                     [display]="display"
                     field="directions"
                     [index]="$index"
+                    [editableRowCount]="getEditableStepsLength('directions')"
+                    [stepValueOverride]="display.editable ? step : null"
                     [isEditing]="isEditing('directions', $index)"
                     [editingDraft]="editingDraft"
                     [canDragSteps]="canDragSteps()"
@@ -111,6 +119,7 @@
                     [comparisonFlashRed]="isComparisonFlash(display, 'directions', $index, 'red')"
                     [isFlashingEditActions]="isFlashingEditActions('directions', $index)"
                     [isReordering]="isDraggingDisplay(display)"
+                    [comparisonInsertPreview]="isComparisonInsertPreview(display, 'directions', $index)"
                     (editingDraftChange)="editingDraft = $event"
                     (editRequested)="startEditing(display, 'directions', $index)"
                     (deleteRequested)="handleDeleteStepClick($event, display, 'directions', $index)"
@@ -120,7 +129,10 @@
                     (dragOverRequested)="allowStepDrop($event, display, 'directions', $index)"
                     (dropRequested)="dropStep($event, display, 'directions')"
                     (dragEndRequested)="endStepDrag($event)"
-                    (comparisonSelectionRequested)="toggleComparisonSelection(display, 'directions', $index)"
+                    (comparisonSelectionRequested)="toggleComparisonSelection(display, 'directions', $index, $event)"
+                    (comparisonTargetRowChanged)="setHoveredComparisonTarget(display, 'directions', $event)"
+                    (comparisonDialogModeChanged)="setComparisonDialogMode($event)"
+                    (comparisonDialogOpenChange)="setComparisonDialogOpen($event)"
                     (hoverChanged)="setHoveredComparison(display, 'directions', $index, $event)"
                     (acceptRequested)="acceptEditing(display, 'directions', $index)"
                     (cancelRequested)="cancelEditing()"

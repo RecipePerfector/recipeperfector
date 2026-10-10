@@ -2,7 +2,7 @@ import { AfterViewChecked, Component, ElementRef, HostListener, OnInit, ViewChil
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { RecipePageHeadingComponent } from './recipe-page-heading/recipe-page-heading.component';
-import { RecipeDisplay, RecipeField, RecipeRowComponent } from './recipe-row/recipe-row.component';
+import { ComparisonSelectionAction, RecipeDisplay, RecipeField, RecipeRowComponent } from './recipe-row/recipe-row.component';
 import { RecipeService } from '../../services/recipe/recipe.service';
 import { RecipePdfService } from '../../services/recipe/recipe-pdf.service';
 import { RecipeData } from '../../models/recipe-display.model';
@@ -47,7 +47,10 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   } | null = null;
   editingDraft = '';
   comparisonSelections = new Set<string>();
+  comparisonDialogOpen = false;
+  comparisonDialogMode: 'replace' | 'insert' = 'replace';
   hoveredComparison: { title: string; field: 'ingredients' | 'directions'; index: number } | null = null;
+  hoveredComparisonTarget: { field: 'ingredients' | 'directions'; index: number } | null = null;
   flashComparison: { title: string; field: 'ingredients' | 'directions'; index: number; variant: 'green' | 'red' } | null = null;
 
   constructor(
@@ -151,6 +154,33 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
 
   updateRecipeTitle(recipeTitle: string): void {
     this.recipeDisplays.forEach((display) => display.recipeTitle = recipeTitle);
+  }
+
+  getDisplayedSteps(display: RecipeDisplay, field: RecipeField): string[] {
+    if (
+      !display.editable ||
+      !this.comparisonDialogOpen ||
+      this.hoveredComparisonTarget?.field !== field ||
+      !this.hoveredComparison
+    ) {
+      return display[field];
+    }
+
+    const sourceDisplay = this.recipeDisplays.find((candidate) => candidate.title === this.hoveredComparison?.title);
+    const sourceValue = sourceDisplay?.[field][this.hoveredComparison.index];
+    if (sourceValue === undefined) {
+      return display[field];
+    }
+
+    const previewSteps = [...display[field]];
+    const targetIndex = Math.min(this.hoveredComparisonTarget.index, previewSteps.length - 1);
+    if (this.comparisonDialogMode === 'insert') {
+      previewSteps.splice(Math.min(this.hoveredComparisonTarget.index, previewSteps.length), 0, sourceValue);
+    } else if (targetIndex >= 0) {
+      previewSteps[targetIndex] = sourceValue;
+    }
+
+    return previewSteps;
   }
 
   requestPdfDownloadForEditableRecipe(): void {
@@ -385,8 +415,16 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   isComparisonRed(display: RecipeDisplay, field: RecipeField, index: number): boolean {
     return !!this.hoveredComparison &&
       display.title === 'Yours (Editable)' &&
-      this.hoveredComparison.field === field &&
-      this.hoveredComparison.index === index;
+      this.hoveredComparisonTarget?.field === field &&
+      this.hoveredComparisonTarget.index === index;
+  }
+
+  isComparisonInsertPreview(display: RecipeDisplay, field: RecipeField, index: number): boolean {
+    return this.comparisonDialogOpen &&
+      this.comparisonDialogMode === 'insert' &&
+      display.title === 'Yours (Editable)' &&
+      this.hoveredComparisonTarget?.field === field &&
+      this.hoveredComparisonTarget.index === index;
   }
 
   isComparisonFlash(
@@ -408,29 +446,81 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     index: number,
     isHovering: boolean
   ): void {
+    if (this.comparisonDialogOpen) {
+      return;
+    }
+
     if (display.title === 'Yours (Editable)') {
       return;
     }
 
     if (!isHovering) {
       this.hoveredComparison = null;
+      this.hoveredComparisonTarget = null;
       return;
     }
 
     this.hoveredComparison = { title: display.title, field, index };
+    this.hoveredComparisonTarget = { field, index };
   }
 
-  triggerComparisonFlash(display: RecipeDisplay, field: 'ingredients' | 'directions', index: number): void {
+  setHoveredComparisonTarget(display: RecipeDisplay, field: RecipeField, replacementRow: number): void {
+    if (display.title === 'Yours (Editable)') {
+      return;
+    }
+
+    this.hoveredComparisonTarget = {
+      field,
+      index: this.comparisonDialogMode === 'insert'
+        ? Math.min(Math.max(0, replacementRow - 1), this.getEditableStepsLength(field))
+        : Math.max(0, replacementRow - 1)
+    };
+  }
+
+  setComparisonDialogMode(mode: 'replace' | 'insert'): void {
+    this.comparisonDialogMode = mode;
+    if (mode === 'insert' && this.hoveredComparisonTarget) {
+      this.hoveredComparisonTarget = {
+        ...this.hoveredComparisonTarget,
+        index: Math.min(
+          this.hoveredComparisonTarget.index,
+          this.getEditableStepsLength(this.hoveredComparisonTarget.field)
+        )
+      };
+    }
+  }
+
+  getEditableStepsLength(field: RecipeField): number {
+    return this.recipeDisplays.find((display) => display.title === 'Yours (Editable)')?.[field].length ?? 0;
+  }
+
+  setComparisonDialogOpen(isOpen: boolean): void {
+    this.comparisonDialogOpen = isOpen;
+  }
+
+  triggerComparisonFlash(
+    display: RecipeDisplay,
+    field: 'ingredients' | 'directions',
+    index: number,
+    replacementIndex = index,
+    mode: 'replace' | 'insert' = 'replace'
+  ): void {
     const yours = this.recipeDisplays.find((recipe) => recipe.title === 'Yours (Editable)');
-    let yoursIndex = index;
+    let yoursIndex = replacementIndex;
     if (yours && display.title !== 'Yours (Editable)') {
       const steps = yours[field];
       const updatedValue = display[field][index];
-      const hadPreviousValue = index < steps.length;
-      const previousValue = steps[index];
+      const destinationIndex = mode === 'insert'
+        ? Math.min(replacementIndex, steps.length)
+        : replacementIndex;
+      const hadPreviousValue = mode === 'replace' && destinationIndex < steps.length;
+      const previousValue = steps[destinationIndex];
 
-      if (hadPreviousValue) {
-        steps[index] = updatedValue;
+      if (mode === 'insert') {
+        steps.splice(destinationIndex, 0, updatedValue);
+        yoursIndex = destinationIndex;
+      } else if (hadPreviousValue) {
+        steps[destinationIndex] = updatedValue;
       } else {
         yoursIndex = steps.length;
         steps.push(updatedValue);
@@ -504,8 +594,14 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  toggleComparisonSelection(display: RecipeDisplay, field: RecipeField, index: number): void {
-    this.triggerComparisonFlash(display, field, index);
+  toggleComparisonSelection(
+    display: RecipeDisplay,
+    field: RecipeField,
+    index: number,
+    action: ComparisonSelectionAction = { row: index + 1, mode: 'replace' }
+  ): void {
+    const replacementIndex = Math.max(0, action.row - 1);
+    this.triggerComparisonFlash(display, field, index, replacementIndex, action.mode);
     this.comparisonSelections.delete(`${display.title}-${field}-${index}`);
   }
 

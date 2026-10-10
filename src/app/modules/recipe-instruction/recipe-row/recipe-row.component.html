@@ -8,7 +8,7 @@
       [attr.aria-pressed]="isSelected"
       (focus)="handleComparisonFocus(true)"
       (blur)="handleComparisonFocus(false)"
-      (click)="handleComparisonSelection($event)"
+      (click)="openComparisonSelectionDialog($event)"
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M15 18 9 12l6-6" />
@@ -22,7 +22,7 @@
       [attr.aria-pressed]="isSelected"
       (focus)="handleComparisonFocus(true)"
       (blur)="handleComparisonFocus(false)"
-      (click)="handleComparisonSelection($event)"
+      (click)="openComparisonSelectionDialog($event)"
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M17 18 11 12l6-6" />
@@ -59,4 +59,62 @@
 ></app-recipe-row-editable>
 @if (!isEditing) {
   <span class="row-value">{{ stepValue }}</span>
+}
+
+@if (comparisonSelectionDialogOpen) {
+  <div class="comparison-selection-backdrop" role="presentation" (click)="closeComparisonSelectionDialog($event)">
+    <div
+      class="comparison-selection-dialog"
+      #comparisonSelectionDialog
+      [class.replace-tab-active]="comparisonDialogTab === 'replace'"
+      [class.insert-tab-active]="comparisonDialogTab === 'insert'"
+      [class.dialog-dragged]="dialogPosition"
+      [style.left.px]="dialogPosition?.left"
+      [style.top.px]="dialogPosition?.top"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="comparison-selection-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="comparison-selection-title" (mousedown)="startDialogDrag($event)">Select row</h2>
+      <div class="comparison-selection-tabs" role="tablist" aria-label="Comparison action">
+        <button
+          type="button"
+          role="tab"
+          class="replace-tab"
+          [class.active]="comparisonDialogTab === 'replace'"
+          [attr.aria-selected]="comparisonDialogTab === 'replace'"
+          (click)="selectComparisonDialogTab('replace', $event)"
+        >
+          Replace
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="insert-tab"
+          [class.active]="comparisonDialogTab === 'insert'"
+          [attr.aria-selected]="comparisonDialogTab === 'insert'"
+          (click)="selectComparisonDialogTab('insert', $event)"
+        >
+          Insert
+        </button>
+      </div>
+      <label for="comparison-target-row">Row number</label>
+      <input
+        id="comparison-target-row"
+        type="number"
+        min="1"
+        [max]="comparisonTargetRowMax"
+        step="1"
+        [(ngModel)]="comparisonTargetRow"
+        (ngModelChange)="comparisonTargetRowChangedHandler($event)"
+      />
+      <div class="comparison-selection-actions">
+        <button type="button" (click)="closeComparisonSelectionDialog($event)">Cancel</button>
+        <button type="button" (click)="handleComparisonSelection($event)">
+          {{ comparisonDialogTab === 'replace' ? 'Replace' : 'Insert' }}
+        </button>
+      </div>
+    </div>
+  </div>
 }

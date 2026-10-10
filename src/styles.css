@@ -108,6 +108,11 @@ app-recipe-instruction li[app-recipe-row].comparison-red {
   border-color: #fca5a5;
 }
 
+app-recipe-instruction li[app-recipe-row].comparison-insert-preview {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
 app-recipe-instruction li[app-recipe-row].comparison-flash-green {
   animation: comparison-flash-green 1.8s ease-in-out 2;
 }
