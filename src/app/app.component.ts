@@ -26,13 +26,16 @@ export class AppComponent {
       console.log('Confirm Email Response: ', response);
 
       if (response.message === 'Email confirmed successfully') {
+        this.userService.setUserLoggedIn(true);
+        this.userService.setUsername(response?.user.username);
+
         this.authShell?.closeLoginDialog();
         this.authShell?.openLoginDialog();
-        this.authShell.confirmationText = 'Your account has been created. You may now login to your account.';
+        this.authShell.confirmationText = 'Your account has been created. You have been logged into your account.';
       } else if(response.error === 'Email already confirmed') {
         this.authShell?.closeLoginDialog();
         this.authShell?.openLoginDialog();
-        this.authShell.confirmationText = 'Your email has already been confirmed. You may now login to your account.';
+        this.authShell.confirmationText = 'Your email has already been confirmed. You may login to your account.';
       }
     }
   }
