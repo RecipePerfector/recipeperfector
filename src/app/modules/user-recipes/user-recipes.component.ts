@@ -8,6 +8,11 @@ export interface SavedRecipe {
   title: string;
 }
 
+interface DeleteRecipeResponse {
+  success: boolean;
+  error?: string;
+}
+
 @Component({
   selector: 'app-user-recipes',
   standalone: true,
@@ -19,12 +24,21 @@ export class UserRecipesComponent {
   private recipeService = inject(RecipeService);
   /** Recipes will be populated when saved-recipe loading is implemented. */
   savedRecipes: SavedRecipe[] = [];
+  isLoading = true;
+  deleteMessage = '';
+  deleteMessageType: 'success' | 'error' = 'success';
+  deleteDialogOpen = false;
+  recipePendingDeletion: SavedRecipe | null = null;
 
   constructor(private router: Router) {}
 
   async ngOnInit(): Promise<void> {
-    this.savedRecipes = await this.recipeService.getUserRecipes();
-    console.log('savedRecipes: ', this.savedRecipes);
+    try {
+      this.savedRecipes = await this.recipeService.getUserRecipes();
+      console.log('savedRecipes: ', this.savedRecipes);
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   editRecipe(recipe: SavedRecipe): void {
@@ -32,6 +46,34 @@ export class UserRecipesComponent {
   }
 
   deleteRecipe(recipe: SavedRecipe): void {
-    this.savedRecipes = this.savedRecipes.filter(({ id }) => id !== recipe.id);
+    this.recipePendingDeletion = recipe;
+  }
+
+  cancelDelete(): void {
+    this.recipePendingDeletion = null;
+  }
+
+  async confirmDelete(): Promise<void> {
+    if (!this.recipePendingDeletion) {
+      return;
+    }
+
+    const recipe = this.recipePendingDeletion;
+    this.recipePendingDeletion = null;
+    const deleteResponse = await this.recipeService.deleteUserRecipe(recipe.id) as DeleteRecipeResponse;
+
+    if (deleteResponse.success) {
+      this.savedRecipes = this.savedRecipes.filter(({ id }) => id !== recipe.id);
+      this.deleteMessage = `${recipe.title} deleted successfully.`;
+      this.deleteMessageType = 'success';
+    } else {
+      this.deleteMessage = `Recipe could not be deleted: ${deleteResponse.error ?? ''}`;
+      this.deleteMessageType = 'error';
+    }
+    this.deleteDialogOpen = true;
+  }
+
+  closeDeleteDialog(): void {
+    this.deleteDialogOpen = false;
   }
 }

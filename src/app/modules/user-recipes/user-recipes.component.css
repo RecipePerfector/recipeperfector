@@ -47,11 +47,17 @@ h1 {
 }
 
 .recipe-card,
-.empty-state {
+.empty-state,
+.loading-state {
   padding: 1.5rem;
   border: 1px solid #e5e7eb;
   border-radius: 1rem;
   background: #fff;
+}
+
+.loading-state p {
+  margin: 0;
+  color: #6b7280;
 }
 
 .recipe-card {
@@ -75,6 +81,41 @@ h1 {
 
 .delete-btn {
   color: #b91c1c;
+}
+
+.delete-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(17, 24, 39, 0.55);
+}
+
+.delete-dialog {
+  width: min(100%, 24rem);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+}
+
+.delete-dialog h2 {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+}
+
+.delete-dialog p {
+  margin: 0 0 1rem;
+}
+
+.delete-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .empty-state p {

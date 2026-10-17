@@ -38,4 +38,12 @@ export class RecipeService {
     }, this.user.getAuthToken() ?? undefined);
     return response;
   }
+
+  async deleteUserRecipe(recipeID: string): Promise<any> {
+    console.log('delete user recipe with ID: ', recipeID);
+    const response = await this.api.callAPIPost('/api/recipes/delete', {
+      recipeID: recipeID
+    }, this.user.getAuthToken() ?? undefined);
+    return response;
+  }
 }

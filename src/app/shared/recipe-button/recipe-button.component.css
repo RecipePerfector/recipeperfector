@@ -23,6 +23,16 @@
   padding: 0.7rem 0.95rem;
   cursor: pointer;
 }
+.edit-btn:hover,
+.edit-btn:focus-visible {
+  background: #dcfce7;
+  color: #15803d;
+}
+.delete-btn:hover,
+.delete-btn:focus-visible {
+  background: #fee2e2;
+  color: #b91c1c;
+}
 .primary-btn:disabled,
 .primary-btn[disabled]{
   background: #aaa9a9;
