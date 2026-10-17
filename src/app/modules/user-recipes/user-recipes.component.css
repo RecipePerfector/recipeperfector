@@ -1,0 +1,97 @@
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.page-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 3rem;
+}
+
+.page-heading {
+  margin-bottom: 1.75rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #c2410c;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  color: #1f2937;
+}
+
+h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 3vw, 2.75rem);
+}
+
+.page-copy,
+.empty-state p {
+  color: #6b7280;
+}
+
+.page-copy {
+  margin: 0;
+}
+
+.recipe-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.recipe-card,
+.empty-state {
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: #fff;
+}
+
+.recipe-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.recipe-card h2,
+.empty-state h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.recipe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.delete-btn {
+  color: #b91c1c;
+}
+
+.empty-state p {
+  margin: 0.65rem 0 0;
+}
+
+@media (max-width: 36rem) {
+  .recipe-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .recipe-actions {
+    width: 100%;
+  }
+
+  .recipe-actions app-recipe-button {
+    flex: 1;
+  }
+}

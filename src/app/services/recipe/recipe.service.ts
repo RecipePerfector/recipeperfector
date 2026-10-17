@@ -30,4 +30,12 @@ export class RecipeService {
     }, this.user.getAuthToken() ?? undefined);
     return response;
   }
+
+  async getUserRecipes(): Promise<any> {
+    console.log('get user recipes from ID: ', this.user.getUserId());
+    const response = await this.api.callAPIPost('/api/recipes/get', {
+      userID: this.user.getUserId()
+    }, this.user.getAuthToken() ?? undefined);
+    return response;
+  }
 }

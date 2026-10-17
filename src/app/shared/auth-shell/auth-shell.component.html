@@ -14,7 +14,7 @@
     </app-recipe-button>
 
     @if (isLoggedIn && isAccountMenuOpen) {
-      <app-account-menu (loggedOut)="logout()" />
+      <app-account-menu (recipesRequested)="openRecipes()" (loggedOut)="logout()" />
     }
   </div>
 </header>

@@ -12,10 +12,12 @@ export class UserService {
 
   loggedIn: boolean = false;
   username: string | null = null;
+  userId: string | null = null;
 
   constructor(private api: ApiService, private router: Router) {
     this.authToken = localStorage.getItem(this.authTokenStorageKey);
     this.username = localStorage.getItem('username');
+    this.userId = localStorage.getItem('userId');
   }
 
   isUserLoggedIn(): boolean {
@@ -35,8 +37,17 @@ export class UserService {
     localStorage.setItem('username', username);
   }
 
+  setUserId(userId: string): void {
+    this.userId = userId;
+    localStorage.setItem('userId', userId);
+  }
+
   getUsername(): string | null {
     return this.username;
+  }
+
+  getUserId(): string | null {
+    return this.userId;
   }
 
   logout(): void {
@@ -46,6 +57,7 @@ export class UserService {
     localStorage.removeItem('loggedIn');
     localStorage.removeItem(this.authTokenStorageKey);
     localStorage.removeItem('username');
+    localStorage.removeItem('userId');
   }
 
   getAuthToken(): string | null {

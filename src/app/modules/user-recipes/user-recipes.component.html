@@ -1,0 +1,30 @@
+<main class="page-shell" aria-labelledby="recipes-heading">
+  <section class="page-heading">
+    <p class="eyebrow">Your account</p>
+    <h1 id="recipes-heading">My Recipes</h1>
+    <p class="page-copy">View and manage the recipes you have saved.</p>
+  </section>
+
+  @if (savedRecipes.length > 0) {
+    <section class="recipe-list" aria-label="Saved recipes">
+      @for (recipe of savedRecipes; track recipe.id) {
+        <article class="recipe-card">
+          <h2>{{ recipe.title }}</h2>
+          <div class="recipe-actions">
+            <app-recipe-button btnClass="secondary-btn" type="button" (pressed)="editRecipe(recipe)">
+              Edit
+            </app-recipe-button>
+            <app-recipe-button btnClass="secondary-btn delete-btn" type="button" (pressed)="deleteRecipe(recipe)">
+              Delete
+            </app-recipe-button>
+          </div>
+        </article>
+      }
+    </section>
+  } @else {
+    <section class="empty-state" aria-live="polite">
+      <h2>No saved recipes yet</h2>
+      <p>Your saved recipes will appear here.</p>
+    </section>
+  }
+</main>

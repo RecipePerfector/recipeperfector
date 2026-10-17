@@ -7,7 +7,12 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrl: './account-menu.component.css'
 })
 export class AccountMenuComponent {
+  @Output() recipesRequested = new EventEmitter<void>();
   @Output() loggedOut = new EventEmitter<void>();
+
+  openRecipes(): void {
+    this.recipesRequested.emit();
+  }
 
   logout(): void {
     this.loggedOut.emit();

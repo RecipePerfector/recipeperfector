@@ -63,6 +63,11 @@ export class AuthShellComponent {
     this.isAccountMenuOpen = !this.isAccountMenuOpen;
   }
 
+  openRecipes(): void {
+    this.isAccountMenuOpen = false;
+    void this.router.navigate(['/recipes']);
+  }
+
   @HostListener('document:click', ['$event'])
   closeAccountMenuOnOutsideClick(event: MouseEvent): void {
     if (!this.isAccountMenuOpen || !this.accountMenuContainer) {
@@ -127,6 +132,7 @@ export class AuthShellComponent {
         } else {
           this.userService.setUserLoggedIn(true);
           this.userService.setUsername(response?.user.username);
+          this.userService.setUserId(response?.user.id);
           this.closeLoginDialog();
         }
       } finally {

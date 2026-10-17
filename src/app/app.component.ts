@@ -28,6 +28,7 @@ export class AppComponent {
       if (response.message === 'Email confirmed successfully') {
         this.userService.setUserLoggedIn(true);
         this.userService.setUsername(response?.user.username);
+        this.userService.setUserId(response?.user.id);
 
         this.authShell?.closeLoginDialog();
         this.authShell?.openLoginDialog();

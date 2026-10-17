@@ -93,10 +93,23 @@ describe('AuthShellComponent', () => {
     expect(fixture.nativeElement.querySelector('.account-username')).toBeFalsy();
 
     spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
-    fixture.nativeElement.querySelector('.account-menu button').click();
+    fixture.nativeElement.querySelector('.account-menu button:last-child').click();
     expect(userService.logout).toHaveBeenCalled();
     expect(component.isAccountMenuOpen).toBeFalse();
     expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  it('opens the saved recipes screen from the account menu', () => {
+    userService.isUserLoggedIn.and.returnValue(true);
+    fixture.detectChanges();
+
+    spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    fixture.nativeElement.querySelector('.user-menu').click();
+    fixture.detectChanges();
+    fixture.nativeElement.querySelector('.account-menu button:first-child').click();
+
+    expect(component.isAccountMenuOpen).toBeFalse();
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/recipes']);
   });
 
   it('closes the account menu when clicking outside of it', () => {
