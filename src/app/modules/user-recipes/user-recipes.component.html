@@ -39,6 +39,7 @@
 
   @if (isLoading) {
     <section class="loading-state" aria-live="polite">
+      <span class="loading-spinner" aria-hidden="true"></span>
       <p>Loading your recipes...</p>
     </section>
   } @else if (savedRecipes.length > 0) {
