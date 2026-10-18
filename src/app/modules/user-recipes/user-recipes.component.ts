@@ -22,13 +22,13 @@ interface DeleteRecipeResponse {
 })
 export class UserRecipesComponent {
   private recipeService = inject(RecipeService);
-  /** Recipes will be populated when saved-recipe loading is implemented. */
   savedRecipes: SavedRecipe[] = [];
   isLoading = true;
   deleteMessage = '';
   deleteMessageType: 'success' | 'error' = 'success';
   deleteDialogOpen = false;
-  recipePendingDeletion: SavedRecipe | null = null;
+  recipesPendingDeletion: SavedRecipe[] = [];
+  selectedRecipeIds = new Set<string>();
 
   constructor(private router: Router) {}
 
@@ -45,29 +45,50 @@ export class UserRecipesComponent {
     void this.router.navigate(['/recipe'], { queryParams: { recipeId: recipe.id } });
   }
 
-  deleteRecipe(recipe: SavedRecipe): void {
-    this.recipePendingDeletion = recipe;
+  isRecipeSelected(recipe: SavedRecipe): boolean {
+    return this.selectedRecipeIds.has(recipe.id);
   }
 
-  cancelDelete(): void {
-    this.recipePendingDeletion = null;
-  }
-
-  async confirmDelete(): Promise<void> {
-    if (!this.recipePendingDeletion) {
+  toggleRecipeSelection(recipe: SavedRecipe, event: Event): void {
+    if (!(event.target instanceof HTMLInputElement)) {
       return;
     }
 
-    const recipe = this.recipePendingDeletion;
-    this.recipePendingDeletion = null;
-    const deleteResponse = await this.recipeService.deleteUserRecipe(recipe.id) as DeleteRecipeResponse;
+    if (event.target.checked) {
+      this.selectedRecipeIds.add(recipe.id);
+    } else {
+      this.selectedRecipeIds.delete(recipe.id);
+    }
+  }
 
-    if (deleteResponse.success) {
-      this.savedRecipes = this.savedRecipes.filter(({ id }) => id !== recipe.id);
-      this.deleteMessage = `${recipe.title} deleted successfully.`;
+  cancelDelete(): void {
+    this.recipesPendingDeletion = [];
+  }
+
+  deleteSelectedRecipes(): void {
+    this.recipesPendingDeletion = this.savedRecipes.filter(({ id }) => this.selectedRecipeIds.has(id));
+  }
+
+  async confirmDelete(): Promise<void> {
+    if (this.recipesPendingDeletion.length === 0) {
+      return;
+    }
+
+    const recipes = this.recipesPendingDeletion;
+    this.recipesPendingDeletion = [];
+    const response = await this.recipeService.deleteUserRecipe(
+      recipes.map(({ id }) => id)
+    ) as DeleteRecipeResponse;
+    const deleted = response.success ? recipes : [];
+    const failedCount = response.success ? 0 : recipes.length;
+    this.savedRecipes = this.savedRecipes.filter(({ id }) => !deleted.some((recipe) => recipe.id === id));
+    deleted.forEach(({ id }) => this.selectedRecipeIds.delete(id));
+
+    if (failedCount === 0) {
+      this.deleteMessage = `${deleted.length} recipe${deleted.length === 1 ? '' : 's'} deleted successfully.`;
       this.deleteMessageType = 'success';
     } else {
-      this.deleteMessage = `Recipe could not be deleted: ${deleteResponse.error ?? ''}`;
+      this.deleteMessage = `${deleted.length} recipe${deleted.length === 1 ? '' : 's'} deleted. ${failedCount} could not be deleted.`;
       this.deleteMessageType = 'error';
     }
     this.deleteDialogOpen = true;

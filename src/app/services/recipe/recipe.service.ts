@@ -39,10 +39,10 @@ export class RecipeService {
     return response;
   }
 
-  async deleteUserRecipe(recipeID: string): Promise<any> {
-    console.log('delete user recipe with ID: ', recipeID);
+  async deleteUserRecipe(recipeIDs: string[]): Promise<any> {
+    console.log('delete user recipes with IDs: ', recipeIDs);
     const response = await this.api.callAPIPost('/api/recipes/delete', {
-      recipeID: recipeID
+      recipeIDs: recipeIDs
     }, this.user.getAuthToken() ?? undefined);
     return response;
   }

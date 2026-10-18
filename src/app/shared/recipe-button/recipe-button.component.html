@@ -1,4 +1,4 @@
-<button [class]="btnClass" [attr.type]="type" (click)="onClick()" [disabled]=isButtonLoading>
+<button [class]="btnClass" [attr.type]="type" (click)="onClick()" [disabled]="isButtonLoading || disabled">
   @if (isButtonLoading) {
     <span class="loading-spinner" aria-hidden="true"></span>
   }

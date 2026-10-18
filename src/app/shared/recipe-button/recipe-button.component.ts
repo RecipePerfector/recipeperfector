@@ -12,6 +12,7 @@ export class RecipeButtonComponent {
   @Input() btnClass = '';
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
   @Input() isButtonLoading = false;
+  @Input() disabled = false;
   @Output() pressed = new EventEmitter<void>();
 
   onClick() {

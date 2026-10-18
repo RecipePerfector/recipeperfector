@@ -28,14 +28,24 @@
   background: #dcfce7;
   color: #15803d;
 }
-.delete-btn:hover,
-.delete-btn:focus-visible {
-  background: #fee2e2;
-  color: #b91c1c;
-}
 .primary-btn:disabled,
-.primary-btn[disabled]{
+.primary-btn[disabled] {
   background: #aaa9a9;
+}
+
+.secondary-btn:disabled,
+.secondary-btn[disabled] {
+  cursor: default;
+}
+
+.secondary-btn.delete-btn:disabled,
+.secondary-btn.delete-btn[disabled] {
+  color: #9ca3af;
+}
+
+.secondary-btn.delete-enabled {
+  background: #fee2e2;
+  color: #111827;
 }
 .loading-spinner {
   display: inline-block;

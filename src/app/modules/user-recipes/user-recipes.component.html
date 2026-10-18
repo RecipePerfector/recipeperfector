@@ -1,14 +1,24 @@
 <main class="page-shell" aria-labelledby="recipes-heading">
   <section class="page-heading">
-    <h1 id="recipes-heading">Your Recipes</h1>
+    <div class="page-heading-title">
+      <h1 id="recipes-heading">Your Recipes</h1>
+      <app-recipe-button
+        [btnClass]="'secondary-btn delete-btn' + (selectedRecipeIds.size > 0 ? ' delete-enabled' : '')"
+        type="button"
+        [disabled]="selectedRecipeIds.size === 0"
+        (pressed)="deleteSelectedRecipes()"
+      >
+        Delete selected
+      </app-recipe-button>
+    </div>
     <p class="page-copy">View and manage the recipes you have saved.</p>
   </section>
 
-  @if (recipePendingDeletion) {
+  @if (recipesPendingDeletion.length > 0) {
     <div class="delete-dialog-backdrop">
       <section class="delete-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-confirmation-title">
         <h2 id="delete-confirmation-title">Confirm recipe deletion</h2>
-        <p>Are you sure you want to delete "{{ recipePendingDeletion.title }}"?</p>
+        <p>Are you sure you want to delete {{ recipesPendingDeletion.length }} selected recipe{{ recipesPendingDeletion.length === 1 ? '' : 's' }}?</p>
         <div class="delete-dialog-actions">
           <app-recipe-button btnClass="secondary-btn" type="button" (pressed)="cancelDelete()">
             Cancel
@@ -45,14 +55,20 @@
   } @else if (savedRecipes.length > 0) {
     <section class="recipe-list" aria-label="Saved recipes">
       @for (recipe of savedRecipes; track recipe.id) {
-        <article class="recipe-card">
-          <h2>{{ recipe.title }}</h2>
+        <article class="recipe-card" [class.selected]="isRecipeSelected(recipe)">
+          <div class="recipe-title">
+            <input
+              class="recipe-checkbox"
+              type="checkbox"
+              [checked]="isRecipeSelected(recipe)"
+              [attr.aria-label]="'Select ' + recipe.title + ' for deletion'"
+              (change)="toggleRecipeSelection(recipe, $event)"
+            />
+            <h2>{{ recipe.title }}</h2>
+          </div>
           <div class="recipe-actions">
             <app-recipe-button btnClass="secondary-btn edit-btn" type="button" (pressed)="editRecipe(recipe)">
               Edit
-            </app-recipe-button>
-            <app-recipe-button btnClass="secondary-btn delete-btn" type="button" (pressed)="deleteRecipe(recipe)">
-              Delete
             </app-recipe-button>
           </div>
         </article>

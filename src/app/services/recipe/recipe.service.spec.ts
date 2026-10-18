@@ -43,4 +43,12 @@ describe('RecipeService', () => {
       crowdSourcePanel: { title: 'Crowd Sourced' }
     }, 'saved-auth-token');
   });
+
+  it('sends multiple recipe IDs when deleting saved recipes', async () => {
+    await service.deleteUserRecipe(['recipe-1', 'recipe-2']);
+
+    expect(api.callAPIPost).toHaveBeenCalledWith('/api/recipes/delete', {
+      recipeID: ['recipe-1', 'recipe-2']
+    }, 'saved-auth-token');
+  });
 });
