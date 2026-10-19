@@ -1,6 +1,56 @@
 <header class="app-header">
   <div class="brand">Recipe Perfector</div>
-  <p class="eyebrow">Crowd Source Recipe Perfection</p>
+  <div class="recipe-access-controls">
+    @if (isLoggedIn) {
+      <div class="recipe-search-wrapper">
+        <div class="recipe-search">
+          <label class="visually-hidden" for="recipe-search-input">Allrecipes.com recipe link</label>
+          <input
+            id="recipe-search-input"
+            type="url"
+            placeholder=" "
+            [(ngModel)]="recipeSearchValue"
+            [attr.aria-invalid]="isRecipeSearchInvalid()"
+            [attr.aria-describedby]="isRecipeSearchInvalid() ? 'recipe-search-error' : null"
+          />
+          <span class="recipe-search-hint" aria-hidden="true">
+            Enter an <strong>allrecipes.com</strong> recipe link to perfect
+          </span>
+          <button class="recipe-search-button" type="button" aria-label="Search recipe link" title="Search">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="11" cy="11" r="6.5"></circle>
+              <path d="m16 16 5 5"></path>
+            </svg>
+          </button>
+        </div>
+        @if (isRecipeSearchInvalid()) {
+          <span id="recipe-search-error" class="recipe-search-error" role="alert">
+            Recipe must include allrecipes.com
+          </span>
+        }
+      </div>
+    } @else {
+      <div class="logged-out-access">
+        <span class="login-required-message">You must login to use this website. Or you can view an example</span>
+        <app-recipe-button
+          btnClass="primary-btn example-recipe-button"
+          type="button"
+          (pressed)="openExampleRecipe()"
+        >
+          Example Recipe
+        </app-recipe-button>
+      </div>
+    }
+    @if (isLoggedIn) {
+      <app-recipe-button
+        btnClass="primary-btn example-recipe-button"
+        type="button"
+        (pressed)="openExampleRecipe()"
+      >
+        Example Recipe
+      </app-recipe-button>
+    }
+  </div>
   <div class="account-menu-container" #accountMenuContainer>
     <app-recipe-button btnClass="user-menu" type="button" (pressed)="isLoggedIn ? toggleAccountMenu() : openLoginDialog()" [attr.aria-expanded]="isLoggedIn ? isAccountMenuOpen : null" aria-haspopup="menu">
     <span class="user-avatar" aria-hidden="true">

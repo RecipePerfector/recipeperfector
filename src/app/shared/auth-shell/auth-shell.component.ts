@@ -35,6 +35,7 @@ export class AuthShellComponent {
   isSigningIn = false;
   userImageUrl = '';
   isAccountMenuOpen = false;
+  recipeSearchValue = '';
   /** Explains why the dialog was opened (e.g. a page that requires login). */
   loginPromptText = '';
 
@@ -55,6 +56,11 @@ export class AuthShellComponent {
     return this.userService.getUsername() ?? 'Account';
   }
 
+  isRecipeSearchInvalid(): boolean {
+    const value = this.recipeSearchValue.trim().toLowerCase();
+    return value.length > 0 && !value.includes('www.allrecipes.com');
+  }
+
   openLoginDialog(): void {
     this.isLoginDialogOpen = true;
   }
@@ -66,6 +72,10 @@ export class AuthShellComponent {
   openRecipes(): void {
     this.isAccountMenuOpen = false;
     void this.router.navigate(['/recipes']);
+  }
+
+  openExampleRecipe(): void {
+    void this.router.navigate(['/recipe']);
   }
 
   @HostListener('document:click', ['$event'])
