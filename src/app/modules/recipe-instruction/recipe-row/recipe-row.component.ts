@@ -1,19 +1,15 @@
-import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
+import { RecipeRowComparisonDialogComponent, ComparisonSelectionAction } from './recipe-row-comparison-dialog/recipe-row-comparison-dialog.component';
 import { RecipeRowEditableComponent } from './recipe-row-editable/recipe-row-editable.component';
 import { RecipeDisplay, RecipeField } from '../../../models/recipe-display.model';
 
 export type { RecipeDisplay, RecipeField } from '../../../models/recipe-display.model';
-
-export type ComparisonSelectionAction = {
-  row: number;
-  mode: 'replace' | 'insert';
-};
+export type { ComparisonSelectionAction } from './recipe-row-comparison-dialog/recipe-row-comparison-dialog.component';
 
 @Component({
   selector: 'li[app-recipe-row]',
   standalone: true,
-  imports: [FormsModule, RecipeRowEditableComponent],
+  imports: [RecipeRowComparisonDialogComponent, RecipeRowEditableComponent],
   templateUrl: './recipe-row.component.html',
   styleUrl: './recipe-row.component.css'
 })
@@ -54,9 +50,6 @@ export class RecipeRowComponent {
   @Output() hoverChanged = new EventEmitter<boolean>();
   @Output() acceptRequested = new EventEmitter<void>();
   @Output() cancelRequested = new EventEmitter<void>();
-
-  @ViewChild('comparisonSelectionDialog')
-  private comparisonSelectionDialog?: ElementRef<HTMLElement>;
 
   @HostBinding('attr.data-step-field')
   get stepFieldAttribute(): RecipeField {
@@ -129,10 +122,6 @@ export class RecipeRowComponent {
   }
 
   comparisonSelectionDialogOpen = false;
-  comparisonTargetRow = this.index + 1;
-  comparisonDialogTab: 'replace' | 'insert' = 'replace';
-  dialogPosition: { left: number; top: number } | null = null;
-  private dialogDragOffset: { x: number; y: number } | null = null;
 
   get stepLabel(): string {
     return this.field === 'ingredients' ? 'ingredient' : 'direction';
@@ -140,10 +129,6 @@ export class RecipeRowComponent {
 
   get stepValue(): string {
     return this.stepValueOverride ?? this.display[this.field][this.index];
-  }
-
-  get comparisonTargetRowMax(): number {
-    return this.editableRowCount + (this.comparisonDialogTab === 'insert' ? 1 : 0);
   }
 
   get showSingleArrow(): boolean {
@@ -187,112 +172,20 @@ export class RecipeRowComponent {
 
   openComparisonSelectionDialog(event: MouseEvent): void {
     event.stopPropagation();
-    this.comparisonDialogTab = 'replace';
-    this.comparisonTargetRow = this.clampComparisonTargetRow(this.index + 1);
     this.comparisonSelectionDialogOpen = true;
-    this.comparisonDialogModeChanged.emit(this.comparisonDialogTab);
-    this.dialogPosition = null;
+    this.comparisonDialogModeChanged.emit('replace');
     this.comparisonDialogOpenChange.emit(true);
-    this.comparisonTargetRowChanged.emit(this.comparisonTargetRow);
-    window.setTimeout(() => {
-      this.comparisonSelectionDialog?.nativeElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'nearest'
-      });
-    }, 0);
+    this.comparisonTargetRowChanged.emit(Math.min(Math.max(1, this.index + 1), this.editableRowCount));
   }
 
-  closeComparisonSelectionDialog(event: MouseEvent): void {
-    event.stopPropagation();
+  closeComparisonSelectionDialog(): void {
     this.comparisonSelectionDialogOpen = false;
-    this.dialogPosition = null;
-    this.dialogDragOffset = null;
     this.comparisonDialogOpenChange.emit(false);
   }
 
-  startDialogDrag(event: MouseEvent): void {
-    if (event.button !== 0 || !this.comparisonSelectionDialog) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-    const dialogRect = this.comparisonSelectionDialog.nativeElement.getBoundingClientRect();
-    this.dialogPosition = {
-      left: dialogRect.left,
-      top: dialogRect.top
-    };
-    this.dialogDragOffset = {
-      x: event.clientX - dialogRect.left,
-      y: event.clientY - dialogRect.top
-    };
-  }
-
-  @HostListener('document:mousemove', ['$event'])
-  dragDialog(event: MouseEvent): void {
-    if (!this.dialogDragOffset || !this.comparisonSelectionDialog) {
-      return;
-    }
-
-    const dialogRect = this.comparisonSelectionDialog.nativeElement.getBoundingClientRect();
-    const left = event.clientX - this.dialogDragOffset.x;
-    const top = event.clientY - this.dialogDragOffset.y;
-    this.dialogPosition = {
-      left: Math.max(0, Math.min(left, window.innerWidth - dialogRect.width)),
-      top: Math.max(0, Math.min(top, window.innerHeight - dialogRect.height))
-    };
-  }
-
-  @HostListener('document:mouseup')
-  stopDialogDrag(): void {
-    this.dialogDragOffset = null;
-  }
-
-  selectComparisonDialogTab(tab: 'replace' | 'insert', event: MouseEvent): void {
-    event.stopPropagation();
-    this.comparisonDialogTab = tab;
-    this.comparisonTargetRow = this.clampComparisonTargetRow(this.comparisonTargetRow);
-    this.comparisonDialogModeChanged.emit(tab);
-    this.comparisonTargetRowChanged.emit(this.comparisonTargetRow);
-  }
-
-  comparisonTargetRowChangedHandler(row: number): void {
-    this.comparisonTargetRow = this.clampComparisonTargetRow(row);
-    this.comparisonTargetRowChanged.emit(this.comparisonTargetRow);
-  }
-
-  private clampComparisonTargetRow(row: number): number {
-    const parsedRow = Number(row);
-    if (!Number.isFinite(parsedRow)) {
-      return 1;
-    }
-
-    return Math.min(Math.max(1, Math.trunc(parsedRow)), this.comparisonTargetRowMax);
-  }
-
-  @HostListener('document:click', ['$event'])
-  closeComparisonSelectionDialogOnOutsideClick(event: MouseEvent): void {
-    if (!this.comparisonSelectionDialogOpen) {
-      return;
-    }
-
-    const target = event.target;
-    if (!(target instanceof Node) || !this.comparisonSelectionDialog?.nativeElement.contains(target)) {
-      this.comparisonSelectionDialogOpen = false;
-      this.comparisonDialogOpenChange.emit(false);
-    }
-  }
-
-  handleComparisonSelection(event: MouseEvent): void {
-    event.stopPropagation();
-    this.comparisonSelectionRequested.emit({
-      row: this.comparisonTargetRow,
-      mode: this.comparisonDialogTab
-    });
-    this.comparisonSelectionDialogOpen = false;
-    this.dialogPosition = null;
-    this.comparisonDialogOpenChange.emit(false);
+  handleComparisonSelection(action: ComparisonSelectionAction): void {
+    this.comparisonSelectionRequested.emit(action);
+    this.closeComparisonSelectionDialog();
   }
 
   handleComparisonFocus(isFocused: boolean): void {

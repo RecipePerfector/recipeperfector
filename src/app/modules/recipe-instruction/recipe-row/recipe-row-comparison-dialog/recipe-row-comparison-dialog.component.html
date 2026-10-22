@@ -1,0 +1,55 @@
+<div class="comparison-selection-backdrop" role="presentation" (click)="close($event)">
+  <div
+    class="comparison-selection-dialog"
+    #comparisonSelectionDialog
+    [class.replace-tab-active]="tab === 'replace'"
+    [class.insert-tab-active]="tab === 'insert'"
+    [class.dialog-dragged]="dialogPosition"
+    [style.left.px]="dialogPosition?.left"
+    [style.top.px]="dialogPosition?.top"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="comparison-selection-title"
+    (click)="$event.stopPropagation()"
+  >
+    <h2 id="comparison-selection-title" (mousedown)="startDrag($event)">Select row</h2>
+    <div class="comparison-selection-tabs" role="tablist" aria-label="Comparison action">
+      <button
+        type="button"
+        role="tab"
+        class="replace-tab"
+        [class.active]="tab === 'replace'"
+        [attr.aria-selected]="tab === 'replace'"
+        (click)="selectTab('replace', $event)"
+      >
+        Replace
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="insert-tab"
+        [class.active]="tab === 'insert'"
+        [attr.aria-selected]="tab === 'insert'"
+        (click)="selectTab('insert', $event)"
+      >
+        Insert
+      </button>
+    </div>
+    <label for="comparison-target-row">Row number</label>
+    <input
+      id="comparison-target-row"
+      type="number"
+      min="1"
+      [max]="targetRowMax"
+      step="1"
+      [(ngModel)]="targetRow"
+      (ngModelChange)="onTargetRowChange($event)"
+    />
+    <div class="comparison-selection-actions">
+      <button type="button" (click)="close($event)">Cancel</button>
+      <button type="button" (click)="confirm($event)">
+        {{ tab === 'replace' ? 'Replace' : 'Insert' }}
+      </button>
+    </div>
+  </div>
+</div>

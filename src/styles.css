@@ -13,6 +13,10 @@ body {
   box-sizing: border-box;
 }
 
+button:hover:not(:disabled):not([aria-disabled='true']) {
+  filter: brightness(0.9);
+}
+
 app-recipe-instruction li[app-recipe-row] .sequence-marker {
   grid-column: 1;
   grid-row: 1;

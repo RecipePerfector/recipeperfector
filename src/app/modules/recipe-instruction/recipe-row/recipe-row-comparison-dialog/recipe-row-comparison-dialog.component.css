@@ -1,0 +1,130 @@
+:host {
+  display: contents;
+}
+
+.comparison-selection-backdrop {
+  position: static;
+  width: 0;
+  height: 0;
+  z-index: 20;
+}
+
+.comparison-selection-dialog {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 2.25rem;
+  display: grid;
+  gap: 0.75rem;
+  width: 14rem;
+  padding: 0.75rem;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  background: #fffaf5;
+  box-shadow: 0 1rem 2rem rgb(28 25 23 / 20%);
+}
+
+.comparison-selection-dialog h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  cursor: grab;
+  user-select: none;
+}
+
+.comparison-selection-dialog.dialog-dragged {
+  position: fixed;
+}
+
+.comparison-selection-dialog.dialog-dragged h2:active {
+  cursor: grabbing;
+}
+
+.comparison-selection-dialog.replace-tab-active {
+  border-color: #fdba74;
+  background: #fff7ed;
+}
+
+.comparison-selection-dialog.insert-tab-active {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.comparison-selection-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid #fed7aa;
+}
+
+.comparison-selection-tabs button {
+  padding: 0.35rem 0.6rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #7c2d12;
+  cursor: pointer;
+  font: inherit;
+}
+
+.comparison-selection-tabs .replace-tab {
+  color: #c2410c;
+}
+
+.comparison-selection-tabs .insert-tab {
+  color: #2563eb;
+}
+
+.comparison-selection-tabs button.active {
+  font-weight: 600;
+}
+
+.comparison-selection-tabs .replace-tab.active {
+  border-bottom-color: #c2410c;
+  background: #ffedd5;
+}
+
+.comparison-selection-tabs .insert-tab.active {
+  border-bottom-color: #2563eb;
+  background: #dbeafe;
+}
+
+.comparison-selection-dialog input {
+  width: 100%;
+  padding: 0.45rem;
+  border: 1px solid #c2410c;
+  border-radius: 4px;
+  font: inherit;
+}
+
+.replace-tab-active input {
+  border-color: #c2410c;
+  background: #fff;
+}
+
+.insert-tab-active input {
+  border-color: #2563eb;
+  background: #fff;
+}
+
+.comparison-selection-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.comparison-selection-actions button {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #c2410c;
+  border-radius: 4px;
+  background: #fff;
+  color: #7c2d12;
+  cursor: pointer;
+  font: inherit;
+}
+
+.comparison-selection-actions button:last-child {
+  background: #c2410c;
+  color: #fff;
+}
+
+.insert-tab-active .comparison-selection-actions button:last-child {
+  background: #2563eb;
+}
