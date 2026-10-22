@@ -13,6 +13,8 @@ export class RecipeButtonComponent {
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
   @Input() isButtonLoading = false;
   @Input() disabled = false;
+  @Input() ariaLabel: string | null = null;
+  @Input() title: string | null = null;
   @Output() pressed = new EventEmitter<void>();
 
   onClick() {

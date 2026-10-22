@@ -31,17 +31,21 @@
       </div>
     } @else {
       <div class="logged-out-access">
-        <span class="login-required-message">You must login to use this website. Or you can view an example</span>
-        <app-recipe-button
-          btnClass="primary-btn example-recipe-button"
-          type="button"
-          (pressed)="openExampleRecipe()"
-        >
-          Example Recipe
-        </app-recipe-button>
+        @if (isExampleRecipePage) {
+          <span class="login-required-message">If you would like to load a different recipe please login.</span>
+        } @else {
+          <span class="login-required-message">You must login to use this website. Or you can view an example</span>
+          <app-recipe-button
+            btnClass="primary-btn example-recipe-button"
+            type="button"
+            (pressed)="openExampleRecipe()"
+          >
+            Example Recipe
+          </app-recipe-button>
+        }
       </div>
     }
-    @if (isLoggedIn) {
+    @if (isLoggedIn && !isExampleRecipePage) {
       <app-recipe-button
         btnClass="primary-btn example-recipe-button"
         type="button"
@@ -51,6 +55,23 @@
       </app-recipe-button>
     }
   </div>
+  @if (!isHomePage) {
+    <app-recipe-button
+      [btnClass]="isLoggedIn && isExampleRecipePage
+        ? 'user-menu home-button example-page-home-button'
+        : 'user-menu home-button'"
+      type="button"
+      ariaLabel="Home"
+      title="Home"
+      (pressed)="openHome()"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="m3 10 9-7 9 7" />
+        <path d="M5 9v11h14V9" />
+        <path d="M9 20v-6h6v6" />
+      </svg>
+    </app-recipe-button>
+  }
   <div class="account-menu-container" #accountMenuContainer>
     <app-recipe-button btnClass="user-menu" type="button" (pressed)="isLoggedIn ? toggleAccountMenu() : openLoginDialog()" [attr.aria-expanded]="isLoggedIn ? isAccountMenuOpen : null" aria-haspopup="menu">
     <span class="user-avatar" aria-hidden="true">

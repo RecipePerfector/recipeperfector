@@ -52,6 +52,14 @@ export class AuthShellComponent {
     return this.userService.isUserLoggedIn();
   }
 
+  get isHomePage(): boolean {
+    return this.router.url.split('?')[0] === '/';
+  }
+
+  get isExampleRecipePage(): boolean {
+    return this.router.url.split('?')[0] === '/recipe';
+  }
+
   get accountLabel(): string {
     return this.userService.getUsername() ?? 'Account';
   }
@@ -72,6 +80,10 @@ export class AuthShellComponent {
   openRecipes(): void {
     this.isAccountMenuOpen = false;
     void this.router.navigate(['/recipes']);
+  }
+
+  openHome(): void {
+    void this.router.navigate(['/']);
   }
 
   openExampleRecipe(): void {

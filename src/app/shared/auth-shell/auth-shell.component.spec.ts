@@ -80,6 +80,24 @@ describe('AuthShellComponent', () => {
     expect(fixture.nativeElement.querySelector('.login-prompt')).toBeFalsy();
   });
 
+  it('shows the recipe-specific login message without the example button on the example page', () => {
+    spyOnProperty(TestBed.inject(Router), 'url', 'get').and.returnValue('/recipe');
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('If you would like to load a different recipe please login.');
+    expect(compiled.textContent).not.toContain('You must login to use this website. Or you can view an example');
+    expect(compiled.querySelector('.example-recipe-button')).toBeFalsy();
+  });
+
+  it('hides the example button for logged-in users on the example page', () => {
+    userService.isUserLoggedIn.and.returnValue(true);
+    spyOnProperty(TestBed.inject(Router), 'url', 'get').and.returnValue('/recipe');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.example-recipe-button')).toBeFalsy();
+  });
+
   it('opens the account menu for a logged-in user and logs out', () => {
     userService.isUserLoggedIn.and.returnValue(true);
     fixture.detectChanges();
@@ -110,6 +128,26 @@ describe('AuthShellComponent', () => {
 
     expect(component.isAccountMenuOpen).toBeFalse();
     expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/recipes']);
+  });
+
+  it('shows the home button away from home and navigates to the root route', () => {
+    spyOnProperty(TestBed.inject(Router), 'url', 'get').and.returnValue('/recipe');
+    fixture.detectChanges();
+
+    const homeButton = fixture.nativeElement.querySelector('.home-button') as HTMLButtonElement;
+    expect(homeButton).toBeTruthy();
+    expect(homeButton.getAttribute('aria-label')).toBe('Home');
+
+    spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    homeButton.click();
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  it('does not show the home button on the home route', () => {
+    spyOnProperty(TestBed.inject(Router), 'url', 'get').and.returnValue('/');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.home-button')).toBeFalsy();
   });
 
   it('closes the account menu when clicking outside of it', () => {

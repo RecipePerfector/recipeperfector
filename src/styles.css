@@ -17,6 +17,25 @@ button:hover:not(:disabled):not([aria-disabled='true']) {
   filter: brightness(0.9);
 }
 
+.home-button {
+  flex: 0 0 auto;
+  padding: 0.6875rem 1.125rem;
+}
+
+.example-page-home-button {
+  margin-right: 0.5rem;
+}
+
+.home-button svg {
+  width: 1.5625rem;
+  height: 1.5625rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.75;
+}
+
 app-recipe-instruction li[app-recipe-row] .sequence-marker {
   grid-column: 1;
   grid-row: 1;
