@@ -91,6 +91,20 @@ describe('RecipeInstructionComponent', () => {
     expect(component.pendingStepUpdate).toBeNull();
   });
 
+  it('should keep the matching rows visible in the original and crowd sourced panels while editing', () => {
+    const editableDisplay = component.recipeDisplays.find((recipe) => recipe.editable)!;
+    const originalValue = component.recipeDisplays[1].ingredients[0];
+    const crowdSourcedValue = component.recipeDisplays[2].ingredients[0];
+
+    component.startEditing(editableDisplay, 'ingredients', 0);
+    fixture.detectChanges();
+
+    const panels = (fixture.nativeElement as HTMLElement).querySelectorAll('.instruction-card');
+    expect(panels[0].querySelector('.row-editor')).not.toBeNull();
+    expect(panels[1].querySelector('.row-value')?.textContent).toContain(originalValue);
+    expect(panels[2].querySelector('.row-value')?.textContent).toContain(crowdSourcedValue);
+  });
+
   it('should append and scroll to a new editable row from each section add button', fakeAsync(() => {
     const display = component.recipeDisplays.find((recipe) => recipe.editable)!;
     const compiled = fixture.nativeElement as HTMLElement;

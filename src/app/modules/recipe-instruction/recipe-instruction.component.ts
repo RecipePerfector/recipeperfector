@@ -25,6 +25,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   errorMessage = '';
   private editingField: 'ingredients' | 'directions' | null = null;
   private editingIndex: number | null = null;
+  private editingDisplay: RecipeDisplay | null = null;
   private draggedStep: {
     display: RecipeDisplay;
     field: 'ingredients' | 'directions';
@@ -233,11 +234,16 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
 
     this.editingField = field;
     this.editingIndex = index;
+    this.editingDisplay = display;
     this.editingDraft = display[field][index];
   }
 
   isEditing(field: RecipeField, index: number): boolean {
     return this.editingField === field && this.editingIndex === index;
+  }
+
+  isEditingRow(display: RecipeDisplay, field: RecipeField, index: number): boolean {
+    return this.editingDisplay === display && this.isEditing(field, index);
   }
 
   removeStep(display: RecipeDisplay, field: RecipeField, index: number): void {
@@ -606,7 +612,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   }
 
   acceptEditing(display: RecipeDisplay, field: RecipeField, index: number): void {
-    if (!this.isEditing(field, index)) {
+    if (!this.isEditingRow(display, field, index)) {
       return;
     }
 
@@ -631,6 +637,7 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   cancelEditing(): void {
     this.editingField = null;
     this.editingIndex = null;
+    this.editingDisplay = null;
     this.editingDraft = '';
   }
 
