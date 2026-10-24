@@ -22,7 +22,6 @@ export class RecipeService {
     originalPanel: TitledRecipe,
     crowdSourcePanel: TitledRecipe
   ): Promise<any> {
-    console.log('Trying to save and the this.user.getAuthToken() is: ', this.user.getAuthToken());
     const response = await this.api.callAPIPost('/api/recipe/save', {
       recipeTitle: recipe.recipeTitle,
       recipe: omitRecipeTitle(recipe),

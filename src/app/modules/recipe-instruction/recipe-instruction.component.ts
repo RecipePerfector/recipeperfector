@@ -21,6 +21,8 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
   recipeDisplays: RecipeDisplay[] = [];
   readonly stepFields: RecipeField[] = ['ingredients', 'directions'];
   pdfConfirmationDisplay: RecipeDisplay | null = null;
+  isSavingRecipe = false;
+  saveRecipeNotification: { title: string; message: string } | null = null;
   isLoading = true;
   errorMessage = '';
   private editingField: 'ingredients' | 'directions' | null = null;
@@ -205,7 +207,27 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
       return;
     }
 
-    await this.recipeService.saveRecipe(display, originalPanel, crowdSourcePanel);
+    this.isSavingRecipe = true;
+    this.saveRecipeNotification = null;
+    try {
+      const saveRecipeResponse = await this.recipeService.saveRecipe(display, originalPanel, crowdSourcePanel);
+      if (typeof saveRecipeResponse === 'object' && saveRecipeResponse !== null) {
+        const response = saveRecipeResponse as { success?: unknown; error?: unknown };
+        if (response.success === true) {
+          this.saveRecipeNotification = {
+            title: 'Recipe Saved',
+            message: 'Recipe Successfully Saved'
+          };
+        } else if (typeof response.error === 'string') {
+          this.saveRecipeNotification = {
+            title: 'Recipe Could Not Be Saved',
+            message: response.error
+          };
+        }
+      }
+    } finally {
+      this.isSavingRecipe = false;
+    }
   }
 
   addStep(display: RecipeDisplay, field: RecipeField): void {
@@ -647,6 +669,10 @@ export class RecipeInstructionComponent implements OnInit, AfterViewChecked {
 
   closePdfConfirmation(): void {
     this.pdfConfirmationDisplay = null;
+  }
+
+  closeSaveRecipeNotification(): void {
+    this.saveRecipeNotification = null;
   }
 
   async confirmPdfDownload(): Promise<void> {

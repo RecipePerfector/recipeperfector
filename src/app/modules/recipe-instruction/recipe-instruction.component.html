@@ -175,6 +175,38 @@
         </section>
       </div>
     }
+
+    @if (isSavingRecipe) {
+      <div class="modal-backdrop">
+        <section
+          class="recipe-save-status-modal"
+          role="status"
+          aria-live="polite"
+          aria-label="Saving recipe"
+        >
+          <span class="save-loading-spinner" aria-hidden="true"></span>
+          <p>Saving recipe...</p>
+        </section>
+      </div>
+    }
+
+    @if (saveRecipeNotification) {
+      <div class="modal-backdrop" (keydown.escape)="closeSaveRecipeNotification()">
+        <section
+          class="recipe-save-status-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="recipe-save-status-title"
+          aria-describedby="recipe-save-status-message"
+        >
+          <h2 id="recipe-save-status-title">{{ saveRecipeNotification.title }}</h2>
+          <p id="recipe-save-status-message">{{ saveRecipeNotification.message }}</p>
+          <div class="modal-actions">
+            <button class="modal-button primary" type="button" (click)="closeSaveRecipeNotification()">Close</button>
+          </div>
+        </section>
+      </div>
+    }
   </section>
 } @else {
   <p class="loading">Loading recipe…</p>

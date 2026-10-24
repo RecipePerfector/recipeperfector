@@ -229,6 +229,48 @@ app-recipe-instruction .pdf-confirmation-modal {
   box-shadow: 0 18px 48px rgba(15, 23, 42, 0.24);
 }
 
+app-recipe-instruction .recipe-save-status-modal {
+  display: flex;
+  width: min(100%, 28rem);
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: #fff;
+  border-top: 5px solid #7c2d12;
+  border-radius: 8px;
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.24);
+}
+
+app-recipe-instruction .recipe-save-status-modal h2 {
+  margin: 0 0 0.5rem;
+  color: #1f2937;
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+app-recipe-instruction .recipe-save-status-modal p {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+  text-align: center;
+}
+
+app-recipe-instruction .save-loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.75rem;
+  border: 3px solid #fed7aa;
+  border-top-color: #7c2d12;
+  border-radius: 50%;
+  animation: recipe-save-spin 0.8s linear infinite;
+}
+
+@keyframes recipe-save-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 app-recipe-instruction .pdf-confirmation-modal h2 {
   margin: 0 0 0.5rem;
   color: #1f2937;

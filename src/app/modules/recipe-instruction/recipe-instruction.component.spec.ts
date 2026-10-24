@@ -210,6 +210,52 @@ describe('RecipeInstructionComponent', () => {
     expect(saveRecipe).toHaveBeenCalledTimes(1);
   });
 
+  it('shows a success notification after saving the recipe', async () => {
+    spyOn(TestBed.inject(UserService), 'isUserLoggedIn').and.returnValue(true);
+    spyOn(TestBed.inject(RecipeService), 'saveRecipe').and.resolveTo({ success: true });
+
+    await component.saveEditableRecipe();
+    fixture.detectChanges();
+
+    expect(component.isSavingRecipe).toBeFalse();
+    expect((fixture.nativeElement as HTMLElement).querySelector('.recipe-save-status-modal')?.textContent)
+      .toContain('Recipe Successfully Saved');
+  });
+
+  it('shows the loading indicator until the save response arrives', async () => {
+    let resolveSave!: (response: { success: true }) => void;
+    const pendingSave = new Promise<{ success: true }>((resolve) => resolveSave = resolve);
+    spyOn(TestBed.inject(UserService), 'isUserLoggedIn').and.returnValue(true);
+    spyOn(TestBed.inject(RecipeService), 'saveRecipe').and.returnValue(pendingSave);
+
+    const savePromise = component.saveEditableRecipe();
+    fixture.detectChanges();
+
+    expect(component.isSavingRecipe).toBeTrue();
+    expect((fixture.nativeElement as HTMLElement).querySelector('[role="status"]')?.textContent)
+      .toContain('Saving recipe');
+
+    resolveSave({ success: true });
+    await savePromise;
+    fixture.detectChanges();
+
+    expect(component.isSavingRecipe).toBeFalse();
+    expect((fixture.nativeElement as HTMLElement).querySelector('[role="status"]')).toBeNull();
+  });
+
+  it('shows the save error returned by the recipe service', async () => {
+    const error = 'Recipe title is required.';
+    spyOn(TestBed.inject(UserService), 'isUserLoggedIn').and.returnValue(true);
+    spyOn(TestBed.inject(RecipeService), 'saveRecipe').and.resolveTo({ error });
+
+    await component.saveEditableRecipe();
+    fixture.detectChanges();
+
+    expect(component.isSavingRecipe).toBeFalse();
+    expect((fixture.nativeElement as HTMLElement).querySelector('.recipe-save-status-modal')?.textContent)
+      .toContain(`Recipe Could Not Be Saved${error}`);
+  });
+
   it('should reveal the Delete and Drag buttons when an editable row is hovered', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const row = compiled.querySelector<HTMLLIElement>(
