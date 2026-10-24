@@ -26,9 +26,10 @@ export class AppComponent {
       console.log('Confirm Email Response: ', response);
 
       if (response.message === 'Email confirmed successfully') {
-        this.userService.setUserLoggedIn(true);
+        this.userService.setUserLoggedIn(true);//this.user.getAuthToken()
         this.userService.setUsername(response?.user.username);
         this.userService.setUserId(response?.user.id);
+        this.userService.setAuthToken(response?.['token']);
 
         this.authShell?.closeLoginDialog();
         this.authShell?.openLoginDialog();

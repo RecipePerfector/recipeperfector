@@ -52,6 +52,16 @@ describe('AuthShellComponent', () => {
     expect(compiled.textContent).toContain('Create an Account');
   });
 
+  it('shows the passwordless sign-in option when creating an account', () => {
+    component.accountMode = 'create';
+    component.openLoginDialog();
+    fixture.detectChanges();
+
+    const passwordlessOption = fixture.nativeElement.querySelector('.passwordless-option') as HTMLElement;
+    expect(passwordlessOption.textContent).toContain('Use passwordless sign-in');
+    expect(passwordlessOption.querySelector('input[type="checkbox"]')).toBeTruthy();
+  });
+
   it('should show a loading spinner while signing in', async () => {
     let resolveLogin: (response: { user: { username: string } }) => void = () => {};
     userService.loginUser.and.returnValue(new Promise((resolve) => {

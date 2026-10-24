@@ -126,12 +126,26 @@ export class AuthShellComponent {
     if (this.accountMode === 'create') {
       this.isCreatingAccount = true;
       try {
-        const response = await this.userService.createNewUser(this.username, this.password);
-        if (response?.error && response.error === 'Email already in use') {
-          this.confirmationText = 'This email is already registered. Please log in or use a different email.';
-          this.dialogTitle = 'Cannot Create Account';
+        const response = await this.userService.createNewUser(this.username, this.password, this.usePasswordless);
+        console.log('submit create response: ', response);
+        if (response?.error) {
+          if(response.error === 'Email already in use') {
+            this.confirmationText = 'This email is already registered. Please log in or use a different email.';
+            this.dialogTitle = 'Cannot Create Account';
+          } else if(response.error === 'email and password are required') {
+            if(this.usePasswordless) {
+              this.confirmationText = 'An e-mail address is required';
+              this.dialogTitle = 'Cannot Create Account';
+            } else {
+              this.confirmationText = 'An e-mail address and password is required';
+              this.dialogTitle = 'Cannot Create Account';
+            }
+          } else {
+            this.confirmationText = response.error;
+            this.dialogTitle = 'Unknown Error';
+          } 
         } else {
-          this.confirmationText = 'We have sent you an email. Open it and click the Confirm Email image to activate your account.';
+          this.confirmationText = 'We have sent you an email to confirm your account before logging in.';
           this.dialogTitle = 'Action Required';
         }
       } finally {

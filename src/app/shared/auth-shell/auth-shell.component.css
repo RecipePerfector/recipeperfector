@@ -255,10 +255,6 @@
   font-size: 0.95rem;
 }
 
-.passwordless-option-hidden {
-  visibility: hidden;
-}
-
 .login-field {
   display: flex;
   flex-direction: column;

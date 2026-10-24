@@ -60,12 +60,22 @@ export class UserService {
     localStorage.removeItem('userId');
   }
 
+  setAuthToken(authToken: string): void {
+    this.authToken = authToken;
+    
+    if(! authToken) {
+      localStorage.removeItem(this.authTokenStorageKey);
+    } else {
+      localStorage.setItem(this.authTokenStorageKey, authToken);
+    }
+  }
+
   getAuthToken(): string | null {
     return this.authToken ?? localStorage.getItem(this.authTokenStorageKey);
   }
 
-  async createNewUser(email: string, password: string): Promise<any>{
-    const response = await this.api.callAPIPost('/api/users/register', { email: email, password: password });
+  async createNewUser(email: string, password: string, passwordless: boolean): Promise<any>{
+    const response = await this.api.callAPIPost('/api/users/register', { email: email, password: password, passwordless: passwordless });
     console.log('createNewUser response: ');
     console.log(response);
     return response;
@@ -81,12 +91,8 @@ export class UserService {
 
   async loginUser(email: string, password: string): Promise<any> {
     const response = await this.api.callAPIPost('/api/users/login', { email: email, password: password });
-    this.authToken = response?.['token'] ?? null;
-    if (this.authToken) {
-      localStorage.setItem(this.authTokenStorageKey, this.authToken);
-    } else {
-      localStorage.removeItem(this.authTokenStorageKey);
-    }
+    this.setAuthToken(response?.['token']);
+    
     console.log('login response: ');
     console.log(response);
     return response;
