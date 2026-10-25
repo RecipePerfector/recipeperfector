@@ -91,9 +91,17 @@ export class UserService {
 
   async loginUser(email: string, password: string): Promise<any> {
     const response = await this.api.callAPIPost('/api/users/login', { email: email, password: password });
-    this.setAuthToken(response?.['token']);
     
     console.log('login response: ');
+    console.log(response);
+    return response;
+  }
+
+  async loginUserPasswordless(email: string): Promise<any> {
+    const response = await this.api.callAPIPost('/api/users/loginPasswordless', { email: email});
+    this.setAuthToken(response?.['token']);
+    
+    console.log('login passwordless response: ');
     console.log(response);
     return response;
   }

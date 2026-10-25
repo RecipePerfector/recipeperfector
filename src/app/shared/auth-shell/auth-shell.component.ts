@@ -153,9 +153,16 @@ export class AuthShellComponent {
       }
     } else if (this.accountMode === 'existing') {
        if (this.usePasswordless) {
-        //TODO: Implement sending the email
-        this.confirmationText = 'We have sent you an email if that email has an account.';
-        this.dialogTitle = 'Action Required';
+        const response = await this.userService.loginUserPasswordless(this.username);
+        if (response?.error) {
+          this.dialogTitle = "An Error Occurred";
+          this.confirmationText = response?.error;
+        } else {
+          //TODO: Implement sending the email
+          this.confirmationText = 'If that account exists we have sent it a login email.';
+          this.dialogTitle = 'Action Required';
+        }
+        
         return;
       }
       //Logging in with existing account
@@ -169,6 +176,7 @@ export class AuthShellComponent {
           this.userService.setUserLoggedIn(true);
           this.userService.setUsername(response?.user.username);
           this.userService.setUserId(response?.user.id);
+          this.userService.setAuthToken(response.token);
           this.closeLoginDialog();
         }
       } finally {

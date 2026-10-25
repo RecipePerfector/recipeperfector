@@ -119,7 +119,7 @@
         <div class="passwordless-option">
           <label class="login-toggle">
             <input type="checkbox" [(ngModel)]="usePasswordless" name="usePasswordless" />
-            <span>Use passwordless sign-in</span>
+            <span>{{ accountMode === 'create' ? 'Use passwordless' : 'Use passwordless sign-in' }}</span>
           </label>
         </div>
 
