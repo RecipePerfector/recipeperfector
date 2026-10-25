@@ -105,4 +105,12 @@ export class UserService {
     console.log(response);
     return response;
   }
+
+  async loginFromEmail(email: string, code: string): Promise<any> {
+    console.log('Code being sent: ', code);
+    const response = await this.api.callAPIPost('/api/users/login-email', { email: email, code: code });
+    console.log('confirm response: ');
+    console.log(response);
+    return response;
+  }
 }

@@ -18,14 +18,20 @@ export class AppComponent {
   async ngOnInit() {
     const params = new URLSearchParams(window.location.search);
 
-    const code = params.get('c');
+    const confirm = params.get('c');
+    const login = params.get('l');
     const email = params.get('email');
-
-    if (email && code) {
-      const response = await this.userService.confirmUserEmail(email, code);
+  
+    let response;
+    if (email && confirm) {
+      response = await this.userService.confirmUserEmail(email, confirm);
       console.log('Confirm Email Response: ', response);
+    } else if (email && login) {
+      response = await this.userService.loginFromEmail(email, login);
+    }
 
-      if (response.message === 'Email confirmed successfully') {
+    if (response?.message === 'Email confirmed successfully' || 
+      response?.message === 'Login success') {
         this.userService.setUserLoggedIn(true);//this.user.getAuthToken()
         this.userService.setUsername(response?.user.username);
         this.userService.setUserId(response?.user.id);
@@ -33,14 +39,19 @@ export class AppComponent {
 
         this.authShell?.closeLoginDialog();
         this.authShell?.openLoginDialog();
-        this.authShell.confirmationText = 'Your account has been created. You have been logged into your account.';
-        this.authShell.dialogTitle = 'Confirm Email';
-      } else if(response.error === 'Email already confirmed') {
+        if(response?.message === 'Email confirmed successfully') {
+          this.authShell.confirmationText = 'Your account has been created. You have been logged into your account.';
+          this.authShell.dialogTitle = 'Confirm Email';
+        } else if (response?.message === 'Login success'){
+          this.authShell.confirmationText = 'Your account has been logged in successfully.';
+          this.authShell.dialogTitle = 'Login';
+        }
+        
+      } else if(response?.error === 'Email already confirmed') {
         this.authShell?.closeLoginDialog();
         this.authShell?.openLoginDialog();
         this.authShell.confirmationText = 'Your email has already been confirmed. You may login to your account.';
         this.authShell.dialogTitle = 'Confirm Email';
       }
-    }
   }
 }
